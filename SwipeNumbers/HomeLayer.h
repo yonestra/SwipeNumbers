@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
+#import "GADBannerView.h"
 
-@interface HomeLayer : CCLayer {
-    
+@interface HomeLayer : CCLayer <GADBannerViewDelegate> {
+    GADBannerView *_bannerView;
 }
 
 +(CCScene *)scene;

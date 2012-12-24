@@ -20,6 +20,36 @@
     return scene;
 }
 
+-(id)init
+{
+    self = [super init];
+    
+    if (self) {
+        CCLabelTTF *label = [CCLabelTTF labelWithString:@"Hello World" fontName:@"Marker Felt" fontSize:64];
+        CGSize size = [[CCDirector sharedDirector] winSize];
+        label.position =  ccp( size.width /2 , size.height/2 );
+        [self addChild: label];
+        
+        CGRect rect = CGRectMake(0, size.height - 50, 320, 50);
+        _bannerView = [[GADBannerView alloc] initWithFrame:rect];
+        _bannerView.adUnitID = MY_BANNER_UNIT_ID;
+        _bannerView.rootViewController = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+        _bannerView.delegate = self;
+        [[[CCDirector sharedDirector] view] addSubview:_bannerView];
+        
+        GADRequest *request = [GADRequest request];
+        request.testing = NO;
+        [_bannerView loadRequest:request];
+    }
+    
+    return self;
+}
+
+-(void)adViewDidReceiveAd:(GADBannerView *)view
+{
+    printf("adViewDidReceiveAd\n");
+}
+
 -(void)onEnter
 {
     [super onEnter];
@@ -48,6 +78,8 @@
     CCMenu *menu = [CCMenu menuWithItems:item, item2, item3, nil];
     menu.position = CGPointMake(winSize.width / 2, 150);
     [self addChild:menu];
+    
+    
 }
 
 @end
