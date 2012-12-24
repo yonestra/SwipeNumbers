@@ -13,8 +13,8 @@
 @synthesize positionId = _positionId;
 @synthesize value = _value;
 @synthesize isHighlighted =_isHighlighted;
-@synthesize delegate = _delegate;
 
+// 変数の初期化
 - (id)init {
     if (self = [super init]) {
         _positionId = -1;
@@ -23,59 +23,28 @@
     return self;
 }
 
+- (void)dealloc {
+    [highlightedFrame release], highlightedFrame = nil;
+    [animate release], animate = nil;
+    [super dealloc];
+}
+
 -(void)onEnter {
     [super onEnter];
-    
-//    [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:self priority:-9 swallowsTouches:YES];
-    
-//    // 通知センターのオブザーバ登録
-//    [[NSNotificationCenter defaultCenter]
-//     addObserver:self
-//     selector:@selector(NotifyFromNoticationCenter:)
-//     name:nil
-//     object:nil];
-    
+        
     // ハイライト用フレームを用意
     highlightedFrame = [[CCSprite alloc] initWithFile:@"selected.png"];
-    highlightedFrame.color = ccc3(255, 0, 0);
     highlightedFrame.position = CGPointMake(self.contentSize.width / 2, self.contentSize.height / 2);
     highlightedFrame.opacity = 127;
     [self addChild:highlightedFrame z:3];
     highlightedFrame.visible = NO;
-
-}
-
-- (void)onExit {
-    [super onExit];
     
-    [[CCDirector sharedDirector].touchDispatcher removeDelegate:self];
-    [[NSNotificationCenter defaultCenter] removeDelegate:self];
+    // 爆発アニメーションを用意
+    [self readyBurstAnimation];
 }
 
-//- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
-//    BOOL bResult = NO;
-//    
-//    if ([self containsTouchLocation:touch]) {
-//        CCLOG(@"ccTouchBegan![%d]", _positionId);
-//        if ([_delegate respondsToSelector:@selector(tileTapAtIndex:)]) {
-//            [_delegate tileTapAtIndex:_positionId];
-//        }
-//        
-//        // タッチ開始フラグをON
-//        bResult = YES;
-//    }
-//    
-//    return NO;
-//}
-//
-//- (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
-//
-//}
-//
-//- (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event {
-//
-//}
-
+// 衝突判定. タッチされた対象が自分であるかどうかを判断する
+// cocos2dの本にあったものをそのまま引用
 - (BOOL)containsTouchLocation:(UITouch *)touch {
     // UI座標系 -> GI座標系
     CGPoint touchLocation = [touch locationInView:[touch view]];
@@ -100,21 +69,15 @@
     return CGRectContainsPoint(boundingBox, location);
 }
 
-#pragma mark -
-#pragma mark Setter/Getter
-
-- (void)setPositionId:(int)positionId {
-    _positionId = positionId;
-    CCLOG(@"positionId set = %d", _positionId);
-}
-
 
 #pragma mark -
 #pragma mark Animation
 
-- (void)disappearWithAnimation:(BOOL)animated {
+// 爆発アニメーションを用意する
+- (void)readyBurstAnimation {
     // 画像をアニメーション用のに切り替える
     
+    // 最後にブランクイメージを入れる？
     NSArray *fileNames  = [NSArray arrayWithObjects:
                            @"burst_01.png",
                            @"burst_02.png",
@@ -135,22 +98,31 @@
         CGSize size = [animTexture contentSize];
         CGRect rect = CGRectMake(-7.5, -7.5, size.width+15, size.height+15);
         CCSpriteFrame * frame = [CCSpriteFrame frameWithTexture:animTexture rect:rect];
+        CCLOG(@"%@", frame);
         
         [walkAnimFrames addObject:frame];
     }
     CCAnimation *walkAnim = [CCAnimation animationWithFrames:walkAnimFrames delay:0.1f ];
-    CCAnimate *animate  = [CCAnimate actionWithAnimation:walkAnim restoreOriginalFrame:NO];
-//    self.animation = [[CCRepeatForever actionWithAction:animate] retain];
-    
-    [self runAction:animate];
+    animate  = [[CCAnimate actionWithAnimation:walkAnim restoreOriginalFrame:NO] retain];
 }
 
-// ハイライト状態を変更する
+// 爆発アニメーションを再生
+- (void)burstWithAnimation {
+    // 自身を消す
+    self.visible = NO;
+    highlightedFrame.visible = NO;
+    
+    // 爆発アニメーションを表示
+    // TODO: CCActionManage: Assertion failureが出て落ちる
+//    [self runAction:animate];
+}
+
+// ハイライト状態を変更する. YES:ハイライトする NO:ハイライトを消す
 - (void)setHighlighted:(BOOL)highlighted {
     highlightedFrame.visible = highlighted;
 }
 
-// 自分がハイライト状態かどうか
+// 自分がハイライト状態かどうかを返す
 - (BOOL)isHighlighted {
     return highlightedFrame.visible;
 }

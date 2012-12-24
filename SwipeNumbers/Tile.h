@@ -9,23 +9,21 @@
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
 
-@protocol TileTapDelegate <NSObject>
-
-- (void)tileTapAtIndex:(int)positionId;
-
-@end
-
+/**
+ *  画面に表示されるタイルのオブジェクト
+ *
+ */
 @interface Tile : CCSprite  {
-    CCSprite *highlightedFrame;
+    CCSprite *highlightedFrame;     // ハイライト時に表示するスプライト
+    CCAnimate *animate;             // 爆発時のアニメーション
 }
 
-@property (nonatomic, assign) int positionId;
-@property (nonatomic, assign) int value;
-@property (nonatomic, readonly) BOOL isHighlighted;
-@property (nonatomic, assign) id<TileTapDelegate> delegate;
+@property (nonatomic, assign) int positionId;           // タイルの場所を表す値
+@property (nonatomic, assign) int value;                // タイルのサイコロ値（1~6）
+@property (nonatomic, readonly) BOOL isHighlighted;     // タイルがハイライト状態かどうか
 
-- (BOOL)containsTouchLocation:(UITouch *)touch;
-- (void)setHighlighted:(BOOL)highlighted;
-
+- (BOOL)containsTouchLocation:(UITouch *)touch;         // touchの対象タイルかどうかを返す
+- (void)setHighlighted:(BOOL)highlighted;               // タイルの選択状態を切り替える
+- (void)burstWithAnimation;                             // タイルを爆発させる
 
 @end

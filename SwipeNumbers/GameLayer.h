@@ -10,6 +10,16 @@
 #import "cocos2d.h"
 #import "Tile.h"
 
+
+// 最初に生成するタイルの個数
+#define NUMBER_OF_READY_FOR_TILES 49
+
+// タイルの大きさ
+#define TILESIZE   45
+
+// マージン設定
+#define MARGIN_LEFT (320-TILESIZE*7)/2
+
 // 選択中のサイコロの値の合計値の状態を表す変数列挙
 enum {
     CURRENT_POINT_UNDER_TEN = 0,    // 合計値が10より小さい
@@ -17,7 +27,7 @@ enum {
     CURRENT_POINT_OVER_TEN          // 合計値が10より大きい
 };
 
-@interface GameLayer : CCLayer <TileTapDelegate, CCTargetedTouchDelegate> {
+@interface GameLayer : CCLayer <CCTargetedTouchDelegate> {
     CCArray* tileList;              // 画面に表示されているタイルリスト
     CCAnimate *animate;             // 爆発アニメーション（不要？Tile側に持たせたいところ）
     int currentTimerCount;          // 時間計測用。せり上がり判定などに使う
