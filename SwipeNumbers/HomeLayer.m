@@ -36,8 +36,17 @@
     CCMenuItemFont *item = [CCMenuItemFont itemWithString:@"ゲームスタート" block:^(id sender) {
         [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[GameLayer scene] withColor:ccWHITE]];
     }];
-    CCMenu *menu = [CCMenu menuWithItems:item, nil];
-    menu.position = CGPointMake(winSize.width / 2, 60);
+    item.position =CGPointMake(0, 90);
+    CCMenuItemFont *item2 = [CCMenuItemFont itemWithString:@"ランキング" block:^(id sender) {
+        [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[GameLayer scene] withColor:ccWHITE]];
+    }];
+    item2.position =CGPointMake(0, 50);
+    CCMenuItemFont *item3 = [CCMenuItemFont itemWithString:@"遊び方" block:^(id sender) {
+        [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[GameLayer scene] withColor:ccWHITE]];
+    }];
+    item3.position =CGPointMake(0, 10);
+    CCMenu *menu = [CCMenu menuWithItems:item, item2, item3, nil];
+    menu.position = CGPointMake(winSize.width / 2, 150);
     [self addChild:menu];
 }
 
