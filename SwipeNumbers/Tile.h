@@ -9,8 +9,19 @@
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
 
-@interface Tile : CCSprite <CCTargetedTouchDelegate>
+@protocol TileTapDelegate <NSObject>
+
+- (void)tileTapAtIndex:(int)positionId;
+
+@end
+
+@interface Tile : CCSprite <CCTargetedTouchDelegate> {
+    CCSprite *highlightedFrame;
+}
 
 @property (nonatomic, assign) int positionId;
+@property (nonatomic, assign) id<TileTapDelegate> delegate;
+
+- (void)setHighlighted:(BOOL)highlighted;
 
 @end

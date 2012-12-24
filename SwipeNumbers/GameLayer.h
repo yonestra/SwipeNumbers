@@ -8,10 +8,16 @@
 
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
+#import "Tile.h"
 
-@interface GameLayer : CCLayer {
+@interface GameLayer : CCLayer <TileTapDelegate> {
     CCArray* tileList;
+    CCAnimate *animate;
+    int currentCount;
 }
+
+@property (nonatomic, retain) CCAnimate *animation;
+@property (nonatomic, readonly) BOOL isAddTileLine;
 
 +(CCScene *)scene;
 

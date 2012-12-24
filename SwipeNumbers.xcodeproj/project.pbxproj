@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		20A289F01687480E002C4D73 /* Tile.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A289EF1687480E002C4D73 /* Tile.m */; };
+		20C23ABF16886E1B00310066 /* GameManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20C23ABE16886E1B00310066 /* GameManager.m */; };
 		FB1BCFC81686D56B00A46C35 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB1BCFC71686D56B00A46C35 /* QuartzCore.framework */; };
 		FB1BCFCA1686D56B00A46C35 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB1BCFC91686D56B00A46C35 /* OpenGLES.framework */; };
 		FB1BCFCC1686D56B00A46C35 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB1BCFCB1686D56B00A46C35 /* OpenAL.framework */; };
@@ -181,6 +182,8 @@
 /* Begin PBXFileReference section */
 		20A289EE1687480E002C4D73 /* Tile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tile.h; sourceTree = "<group>"; };
 		20A289EF1687480E002C4D73 /* Tile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tile.m; sourceTree = "<group>"; };
+		20C23ABD16886E1B00310066 /* GameManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameManager.h; sourceTree = "<group>"; };
+		20C23ABE16886E1B00310066 /* GameManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameManager.m; sourceTree = "<group>"; };
 		FB1BCFC31686D56B00A46C35 /* SwipeNumbers.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwipeNumbers.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB1BCFC71686D56B00A46C35 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		FB1BCFC91686D56B00A46C35 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -554,6 +557,8 @@
 				FB1BD1631686D6F200A46C35 /* GameLayer.m */,
 				20A289EE1687480E002C4D73 /* Tile.h */,
 				20A289EF1687480E002C4D73 /* Tile.m */,
+				20C23ABD16886E1B00310066 /* GameManager.h */,
+				20C23ABE16886E1B00310066 /* GameManager.m */,
 				FB1BCFDA1686D56B00A46C35 /* Resources */,
 				FB1BCFF41686D56B00A46C35 /* libs */,
 				FB1BD14D1686D57100A46C35 /* Supporting Files */,
@@ -1193,6 +1198,7 @@
 				FB1BD1611686D62A00A46C35 /* HomeLayer.m in Sources */,
 				FB1BD1641686D6F200A46C35 /* GameLayer.m in Sources */,
 				20A289F01687480E002C4D73 /* Tile.m in Sources */,
+				20C23ABF16886E1B00310066 /* GameManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
