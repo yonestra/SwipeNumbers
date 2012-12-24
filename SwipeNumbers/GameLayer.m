@@ -250,11 +250,13 @@
 - (void)ccTouchEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     // 離したら全て解除
     [self highlightOffAllTiles];
+    currentSelectTotalPoint = 0;
 }
 
 - (void)ccTouchCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     // 離したら全て解除
     [self highlightOffAllTiles];
+    currentSelectTotalPoint = 0;
 }
 
 // 全てのタイルのハイライトをOFF状態にする
