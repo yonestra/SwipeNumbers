@@ -11,6 +11,7 @@
 @implementation GameLayer
 @synthesize animation = _animation;
 @synthesize isAddTileLine = _isAddTileLine;
+@synthesize isCurrentPointCheck = _isCurrentPointCheck;
 
 +(CCScene *)scene
 {
@@ -21,11 +22,15 @@
     return scene;
 }
 
+// 変数を初期化
 - (id)init {
     self = [super init];
     if (self) {
         // Initialize
-        currentCount = 0;
+        currentTimerCount = 0;
+        currentSelectTotalPoint = 0;
+        _isAddTileLine = NO;
+        _isCurrentPointCheck = CURRENT_POINT_UNDER_TEN;
     }
     return self;
 }
@@ -34,6 +39,27 @@
 {
     [super onEnter];
     
+    // タッチイベントを拾うように設定
+    [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:self priority:-9 swallowsTouches:YES];
+    
+    // レイアウトの初期化
+    [self initLayout];
+    
+    // タイル配列を初期化
+    tileList = [[CCArray alloc] initWithCapacity:49];
+    
+    // タイルを配置
+    [self arrangeTiles];
+    
+    // 爆発アニメーションを準備
+    [self readyBurstAnimation];
+    
+    // 時間計測スタート
+    [self startTimer];
+}
+
+// レイアウト初期化メソッド。コンポーネントの初期化・配置を担う
+- (void)initLayout {
     // スコアラベル
     CCLabelTTF *scoreLabel = [CCLabelTTF labelWithString:@"Score 20,000pt" fontName:@"Arial-BoldMT" fontSize:20];
     scoreLabel.position = CGPointMake(80, self.contentSize.height - 20);
@@ -51,26 +77,19 @@
     selectCount.position = CGPointMake(280, self.contentSize.height - 20);
     selectCount.color = ccc3(255, 255, 255);
     [self addChild:selectCount z:1];
-    
-    // タイル配列を初期化
-    tileList = [[CCArray alloc] initWithCapacity:49];
-    
-    // タイルを配置
-    [self arrangeTiles];
-    
-    // 爆発アニメーションを準備
-    [self readyBurstAnimation];
 }
+
 
 // 画面いっぱい(49枚)のタイルを作って並べる
 - (void)arrangeTiles {
     // タイルを作成
     for (int i=0; i<49; i++) {
-        int rand = random()%6 + 1;
-        NSString *file = [NSString stringWithFormat:@"dice_%d.png", rand];
+        int randValue = random()%6 + 1; // 1~6の数字を使う
+        NSString *file = [NSString stringWithFormat:@"dice_%d.png", randValue];
         Tile* tile = [[Tile alloc] initWithFile:file];
         tile.position = CGPointMake(45*(i%7)+27.5+2.5, 45*(i/7)+27.5+80);
         tile.positionId = i;
+        tile.value = randValue;
         tile.delegate = self;
         [tileList addObject:tile];
         
@@ -112,16 +131,76 @@
 }
 
 
-#pragma mark -
-#pragma mark TileTapDelegate
+//#pragma mark -
+//#pragma mark TileTapDelegate
+//
+//// タイルがタップされた時
+//- (void)tileTapAtIndex:(int)positionId {
+//    Tile *tappedTile = [tileList objectAtIndex:positionId];
+//    
+//    // タップされたタイルをハイライト表示
+//    [tappedTile setHighlighted:YES];
+//    
+//    // 現在の数値を数える
+//    if (tappedTile.isHighlighted == NO) {
+//        currentSelectTotalPoint += tappedTile.value;
+//    }
+//    
+//    // ちょうど10になってるかチェック
+//    if (self.isCurrentPointCheck == CURRENT_POINT_JUST_TEN) {
+//        // 選択中のタイルを爆発させる（全タイルにNotificationを送る）
+//        // ポイントを付与する（ロジック+ラベルを更新）
+//        // currentSelectTotalPointを0に戻す
+//    }
+//    else if (self.isCurrentPointCheck == CURRENT_POINT_OVER_TEN) {
+//        // エラー！
+//        // 10を超えてしまったら全解除
+//        [self highlightOffAllTiles];
+//        
+//        // currentSelectTotalPointを0に戻す
+//        currentSelectTotalPoint = 0;
+//        
+//    }
+//    else if (self.isCurrentPointCheck == CURRENT_POINT_UNDER_TEN) {
+//        // 何もしない
+//    }
+//}
 
-// タイルがタップされた時
-- (void)tileTapAtIndex:(int)positionId {
+// タイルが選択された時
+- (void)tileSelectAt:(Tile*)tappedTile {
+    
+    // 現在の数値を数える
+    if (tappedTile.isHighlighted == NO) {
+        currentSelectTotalPoint += tappedTile.value;
+    }
     
     // タップされたタイルをハイライト表示
-    [[tileList objectAtIndex:positionId] setHighlighted:YES];
+    [tappedTile setHighlighted:YES];
     
-    // 現在の数値をマネージャに教える
+    
+    // ちょうど10になってるかチェック
+    if (self.isCurrentPointCheck == CURRENT_POINT_JUST_TEN) {
+        // 選択中のタイルを爆発させる（全タイルにNotificationを送る）
+        
+        // 選択全解除（念のため）
+        [self highlightOffAllTiles];
+        
+        // ポイントを付与する（ロジック+ラベルを更新）
+        // currentSelectTotalPointを0に戻す
+        currentSelectTotalPoint = 0;
+    }
+    else if (self.isCurrentPointCheck == CURRENT_POINT_OVER_TEN) {
+        // エラー！
+        // 10を超えてしまったら全解除
+        [self highlightOffAllTiles];
+        
+        // currentSelectTotalPointを0に戻す
+        currentSelectTotalPoint = 0;
+        
+    }
+    else if (self.isCurrentPointCheck == CURRENT_POINT_UNDER_TEN) {
+        // 何もしない
+    }
 }
 
 
@@ -143,7 +222,6 @@
     // TODO: アニメーションが終わったら消す処理（タイマー？）
 }
 
-
 // タイマースタート
 - (void)startTimer{
     NSTimer* tm = [NSTimer
@@ -157,7 +235,7 @@
 
 // 1秒ごとに呼ばれる
 - (void)countTimer {
-    currentCount++;
+    currentTimerCount++;
     
     // せり上がりチェック（レベルによってスピードが異なる）
     if (self.isAddTileLine) {
@@ -170,16 +248,68 @@
     // TODO: 一列追加
     
     // カウンタを初期化
-    currentCount = 0;
+    currentTimerCount = 0;
 }
 
 // 現在のカウンタはブロックを追加するタイミングに相応しいかをチェックする
 - (BOOL)isAddTileLine {
     // TODO: レベルを考慮して追加するかどうかを判断する
-    if (currentCount%10 == 0) {
+    if (currentTimerCount%10 == 0) {
         return YES;
     }
     return NO;
+}
+
+// 
+- (int)isCurrentPointCheck {
+    CCLOG(@"現在の値: %d", currentSelectTotalPoint);
+    
+    if (currentSelectTotalPoint < 10) {
+        return CURRENT_POINT_UNDER_TEN;
+    } else if (currentSelectTotalPoint == 10) {
+        return CURRENT_POINT_JUST_TEN;
+    } else {
+        return CURRENT_POINT_OVER_TEN;
+    }
+}
+
+// タッチした領域に衝突するタイルを探す
+- (void)collesionTile:(UITouch*)touch {
+    for (Tile* tile in tileList) {
+        BOOL result = [tile containsTouchLocation:touch];
+        if (result) {
+            // 衝突したタイルを発見した場合
+            [self tileSelectAt:tile];
+            [tile setHighlighted:YES];
+            return;
+        }
+    }
+}
+
+- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
+    [self collesionTile:touch];
+    return YES;
+}
+
+- (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
+    [self collesionTile:touch];
+}
+
+- (void)ccTouchEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    // 離したら全て解除
+    [self highlightOffAllTiles];
+}
+
+- (void)ccTouchCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    // 離したら全て解除
+    [self highlightOffAllTiles];
+}
+
+// 全てのタイルのハイライトをOFF状態にする
+- (void)highlightOffAllTiles {
+    for (Tile* tile in tileList) {
+        [tile setHighlighted:NO];
+    }
 }
 
 @end

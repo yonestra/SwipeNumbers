@@ -11,11 +11,14 @@
 @implementation Tile
 
 @synthesize positionId = _positionId;
+@synthesize value = _value;
+@synthesize isHighlighted =_isHighlighted;
 @synthesize delegate = _delegate;
 
 - (id)init {
     if (self = [super init]) {
         _positionId = -1;
+        _value = 0;
     }
     return self;
 }
@@ -23,17 +26,17 @@
 -(void)onEnter {
     [super onEnter];
     
-    [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:self priority:-9 swallowsTouches:YES];
+//    [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:self priority:-9 swallowsTouches:YES];
     
-    // 通知センターのオブザーバ登録
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(NotifyFromNoticationCenter:)
-     name:nil
-     object:nil];
+//    // 通知センターのオブザーバ登録
+//    [[NSNotificationCenter defaultCenter]
+//     addObserver:self
+//     selector:@selector(NotifyFromNoticationCenter:)
+//     name:nil
+//     object:nil];
     
     // ハイライト用フレームを用意
-    highlightedFrame = [[CCSprite alloc] initWithFile:@"burst_09.png"];
+    highlightedFrame = [[CCSprite alloc] initWithFile:@"selected.png"];
     highlightedFrame.color = ccc3(255, 0, 0);
     highlightedFrame.position = CGPointMake(self.contentSize.width / 2, self.contentSize.height / 2);
     highlightedFrame.opacity = 127;
@@ -49,31 +52,29 @@
     [[NSNotificationCenter defaultCenter] removeDelegate:self];
 }
 
-- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
-    BOOL bResult = NO;
-    
-    if ([self containsTouchLocation:touch]) {
-        CCLOG(@"ccTouchBegan![%d]", _positionId);
-        if ([_delegate respondsToSelector:@selector(tileTapAtIndex:)]) {
-            [_delegate tileTapAtIndex:_positionId];
-        }
-        // ハイライトフレームを表示
-        [self setHighlighted:YES];
-        
-        // タッチ開始フラグをON
-        bResult = YES;
-    }
-    
-    return NO;
-}
-
-- (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
-
-}
-
-- (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event {
-
-}
+//- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
+//    BOOL bResult = NO;
+//    
+//    if ([self containsTouchLocation:touch]) {
+//        CCLOG(@"ccTouchBegan![%d]", _positionId);
+//        if ([_delegate respondsToSelector:@selector(tileTapAtIndex:)]) {
+//            [_delegate tileTapAtIndex:_positionId];
+//        }
+//        
+//        // タッチ開始フラグをON
+//        bResult = YES;
+//    }
+//    
+//    return NO;
+//}
+//
+//- (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
+//
+//}
+//
+//- (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event {
+//
+//}
 
 - (BOOL)containsTouchLocation:(UITouch *)touch {
     // UI座標系 -> GI座標系
@@ -149,5 +150,9 @@
     highlightedFrame.visible = highlighted;
 }
 
+// 自分がハイライト状態かどうか
+- (BOOL)isHighlighted {
+    return highlightedFrame.visible;
+}
 
 @end

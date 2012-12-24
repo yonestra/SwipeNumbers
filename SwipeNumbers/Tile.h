@@ -15,13 +15,17 @@
 
 @end
 
-@interface Tile : CCSprite <CCTargetedTouchDelegate> {
+@interface Tile : CCSprite  {
     CCSprite *highlightedFrame;
 }
 
 @property (nonatomic, assign) int positionId;
+@property (nonatomic, assign) int value;
+@property (nonatomic, readonly) BOOL isHighlighted;
 @property (nonatomic, assign) id<TileTapDelegate> delegate;
 
+- (BOOL)containsTouchLocation:(UITouch *)touch;
 - (void)setHighlighted:(BOOL)highlighted;
+
 
 @end
