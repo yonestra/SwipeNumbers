@@ -12,6 +12,10 @@
 @synthesize animation = _animation;
 @synthesize isAddTileLine = _isAddTileLine;
 @synthesize isCurrentPointCheck = _isCurrentPointCheck;
+@synthesize score = _score;
+@synthesize currentTimerCount = _currentTimerCount;
+@synthesize currentRestTimeCount = _currentRestTimeCount;
+@synthesize currentSelectTotalPoint = _currentSelectTotalPoint;
 
 +(CCScene *)scene
 {
@@ -27,8 +31,9 @@
     self = [super init];
     if (self) {
         // Initialize
-        currentTimerCount = 0;
-        currentSelectTotalPoint = 0;
+        _currentTimerCount = 0;
+        _currentSelectTotalPoint = 0;
+        _score;
         _isAddTileLine = NO;
         _isCurrentPointCheck = CURRENT_POINT_UNDER_TEN;
     }
@@ -67,22 +72,22 @@
 // レイアウト初期化メソッド。コンポーネントの初期化・配置を担う
 - (void)initLayout {
     // スコアラベル
-    CCLabelTTF *scoreLabel = [CCLabelTTF labelWithString:@"Score 20,000pt" fontName:@"Arial-BoldMT" fontSize:20];
+    scoreLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial-BoldMT" fontSize:30];
     scoreLabel.position = CGPointMake(80, self.contentSize.height - 20);
     scoreLabel.color = ccc3(255, 100, 40);
     [self addChild:scoreLabel z:1];
     
     // せり上がる迄のカウントダウン
-    CCLabelTTF *countDownLabel = [CCLabelTTF labelWithString:@"0:02" fontName:@"Arial-BoldMT" fontSize:20];
+    countDownLabel = [CCLabelTTF labelWithString:@"0:10" fontName:@"Arial-BoldMT" fontSize:20];
     countDownLabel.position = CGPointMake(200, self.contentSize.height - 20);
     countDownLabel.color = ccc3(255, 100, 40);
     [self addChild:countDownLabel z:1];
     
     // 現在選択中のサイの合計値
-    CCLabelTTF *selectCount = [CCLabelTTF labelWithString:@"8/10" fontName:@"Arial-BoldMT" fontSize:30];
-    selectCount.position = CGPointMake(280, self.contentSize.height - 20);
-    selectCount.color = ccc3(255, 255, 255);
-    [self addChild:selectCount z:1];
+    selectCountLabel = [CCLabelTTF labelWithString:@"0/10" fontName:@"Arial-BoldMT" fontSize:30];
+    selectCountLabel.position = CGPointMake(280, self.contentSize.height - 20);
+    selectCountLabel.color = ccc3(255, 255, 255);
+    [self addChild:selectCountLabel z:1];
 }
 
 // 画面いっぱい(49枚)のタイルを作って並べる
@@ -113,7 +118,7 @@
     
     // 現在の数値をカウント. 既にカウント済のタイルは無視する（二重なぞり無視）
     if (tappedTile.isHighlighted == NO) {
-        currentSelectTotalPoint += tappedTile.value;
+        self.currentSelectTotalPoint += tappedTile.value;
     }
     
     // タップされたタイルをハイライト表示
@@ -127,14 +132,13 @@
         // TODO: つくる
         [self burstSelectedTiles];
         
-        // 選択全解除（念のため）
-        [self highlightOffAllTiles];
-        
         // ポイントを付与する（ロジック+ラベルを更新）
-        // TODO: つくる
+        self.score += 10;
         
         // currentSelectTotalPointを0に戻す
-        currentSelectTotalPoint = 0;
+        self.currentSelectTotalPoint = 0;
+
+        isTouchStart = NO;
     }
     else if (self.isCurrentPointCheck == CURRENT_POINT_OVER_TEN) {
         ////// 10をこえちゃった場合 //////
@@ -143,8 +147,9 @@
         [self highlightOffAllTiles];
         
         // currentSelectTotalPointを0に戻す
-        currentSelectTotalPoint = 0;
+        self.currentSelectTotalPoint = 0;
         
+        isTouchStart = NO;
     }
     else if (self.isCurrentPointCheck == CURRENT_POINT_UNDER_TEN) {
         ////// 10より小さい場合 //////
@@ -167,8 +172,8 @@
 
 // 時間計測用メソッド. 1秒ごとに呼ばれる
 - (void)countTimer {
-    currentTimerCount++;
-    CCLOG(@"timer[%d]", currentTimerCount);
+    self.currentTimerCount++;
+    CCLOG(@"timer[%d]", _currentTimerCount);
     
     // せり上がりチェック（レベルによってタイミングは異なる）
     if (self.isAddTileLine) {
@@ -182,7 +187,7 @@
     // TODO: 一列追加の処理
     
     // 既存のタイルをせりあがらせる
-    [self upAllTiles];
+    int maxTileHeight = [self upAllTiles];
     
     for (int i=0; i<7; i++) {
         // タイルオブジェクトを作る
@@ -194,20 +199,28 @@
         tile.value = randValue;     // サイコロの値
         tile.delegate = self;
         [tileList addObject:tile];  // リストに持っておく
-        [self addChild:tile];
+        [self addChild:tile];       // 画面に表示する
     }
     
-    // TODO: ゲームオーバーチェック
-    // tileListのサイズが50以上ならとかでOKなハズ
+    // ゲームオーバー判定
+    if (maxTileHeight-1 > 7) {
+        UIAlertView *alert = [[UIAlertView alloc]
+                              initWithTitle:@"まけ"
+                              message:@"ゲームオーバー"
+                              delegate:self
+                              cancelButtonTitle:nil
+                              otherButtonTitles:@"OK", nil];
+        [alert show];
+    }
     
     // タイマーカウンタを初期化
-    currentTimerCount = 0;
+    self.currentTimerCount = 0;
 }
 
 // タイマーカウンタを見て、ブロックを追加するタイミングかをチェックする
 - (BOOL)isAddTileLine {
     // TODO: レベルの考慮
-    if (currentTimerCount%10 == 0) {
+    if (_currentTimerCount%10 == 0) {
         // とりあえず、10秒毎に一列追加する
         return YES;
     }
@@ -217,9 +230,9 @@
 // 現在なぞり中のサイコロの合計値のステータスをチェック
 // 10より小さい or 10 or 10より大きい
 - (int)isCurrentPointCheck {
-    if (currentSelectTotalPoint < 10) {
+    if (_currentSelectTotalPoint < 10) {
         return CURRENT_POINT_UNDER_TEN;
-    } else if (currentSelectTotalPoint == 10) {
+    } else if (_currentSelectTotalPoint == 10) {
         return CURRENT_POINT_JUST_TEN;
     } else {
         return CURRENT_POINT_OVER_TEN;
@@ -239,24 +252,29 @@
 }
 
 - (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
+    isTouchStart = YES;
     [self collesionTileAction:touch];
     return YES;
 }
 
 - (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
-    [self collesionTileAction:touch];
+    if (isTouchStart) {
+        [self collesionTileAction:touch];
+    }
 }
 
 - (void)ccTouchEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     // 離したら全て解除
     [self highlightOffAllTiles];
-    currentSelectTotalPoint = 0;
+    self.currentSelectTotalPoint = 0;
+    isTouchStart = NO;
 }
 
 - (void)ccTouchCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     // 離したら全て解除
     [self highlightOffAllTiles];
-    currentSelectTotalPoint = 0;
+    self.currentSelectTotalPoint = 0;
+    isTouchStart = NO;
 }
 
 // 全てのタイルのハイライトをOFF状態にする
@@ -302,11 +320,45 @@
 }
 
 // 全てのタイルをせり上げる
-- (void)upAllTiles {
+- (int)upAllTiles {
+    int max = 0;
     for (Tile* tile in tileList) {
         // タイルを１つ下に落とす
-        [tile upTile];
+        int height = [tile upTile];
+        
+        // 最大の高さを取得する
+        if (max < height) {
+            max = height;
+        }
     }
+    return max;
+}
+
+#pragma mark -
+#pragma mark Getter/Setter 
+
+// スコアのセッター
+- (void)setScore:(int)score {
+    _score = score;
+    scoreLabel.string = [NSString stringWithFormat:@"%d", _score];
+}
+
+// タイマーカウント用のセッター
+- (void)setCurrentTimerCount:(int)currentTimerCount {
+    _currentTimerCount = currentTimerCount;
+    countDownLabel.string = [NSString stringWithFormat:@"0:%.2d", self.currentRestTimeCount];
+}
+
+// 「残りX秒」のXの部分を計算して返す
+- (int)currentRestTimeCount {
+    int limit = 10;
+    return (limit - _currentTimerCount);
+}
+
+// 現在選択中のサイコロの合計値のセッター
+- (void)setCurrentSelectTotalPoint:(int)currentSelectTotalPoint {
+    _currentSelectTotalPoint = currentSelectTotalPoint;
+    selectCountLabel.string = [NSString stringWithFormat:@"%d/10", _currentSelectTotalPoint];
 }
 
 @end

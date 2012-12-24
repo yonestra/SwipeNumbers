@@ -97,7 +97,7 @@
         
         [walkAnimFrames addObject:frame];
     }
-    CCAnimation *walkAnim = [CCAnimation animationWithFrames:walkAnimFrames delay:0.07f ];
+    CCAnimation *walkAnim = [CCAnimation animationWithFrames:walkAnimFrames delay:0.1f ];
     animate  = [[CCAnimate actionWithAnimation:walkAnim restoreOriginalFrame:NO] retain];
 }
 
@@ -128,10 +128,6 @@
     [self removeFromParentAndCleanup:YES];
 }
 
-- (void)setHighlightedOFF {
-    [self setHighlighted:NO];
-}
-
 // ハイライト状態を変更する. YES:ハイライトする NO:ハイライトを消す
 - (void)setHighlighted:(BOOL)highlighted {
     highlightedFrame.visible = highlighted;
@@ -142,10 +138,11 @@
     return highlightedFrame.visible;
 }
 
-// タイルを１つ上に移動
-- (void)upTile {
+// タイルを１つ上に移動. 移動後のpositionIdを返す
+- (int)upTile {
     _positionId += 7;
     self.position = CGPointMake(self.position.x, self.position.y + 45);
+    return _positionId/7;
 }
 
 // タイルを１つ下の列に移動

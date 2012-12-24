@@ -30,7 +30,7 @@
 - (BOOL)containsTouchLocation:(UITouch *)touch;         // touchの対象タイルかどうかを返す
 - (void)setHighlighted:(BOOL)highlighted;               // タイルの選択状態を切り替える
 - (void)burstWithAnimation;                             // タイルを爆発させる
-- (void)upTile;                                          // タイルを１つ上にあげる
+- (int)upTile;                                          // タイルを１つ上にあげる
 - (void)downTile;                                       // タイルを１つ下に落とす
 
 @end

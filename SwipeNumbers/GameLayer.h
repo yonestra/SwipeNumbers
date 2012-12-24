@@ -12,7 +12,7 @@
 
 
 // 最初に生成するタイルの個数
-#define NUMBER_OF_READY_FOR_TILES 49
+#define NUMBER_OF_READY_FOR_TILES 28
 
 // タイルの大きさ
 #define TILESIZE   45
@@ -30,13 +30,20 @@ enum {
 @interface GameLayer : CCLayer <CCTargetedTouchDelegate, TileEventDelegate> {
     CCArray* tileList;              // 画面に表示されているタイルリスト
     CCAnimate *animate;             // 爆発アニメーション（不要？Tile側に持たせたいところ）
-    int currentTimerCount;          // 時間計測用。せり上がり判定などに使う
-    int currentSelectTotalPoint;    // 現在のサイコロの値の合計値
+    BOOL isTouchStart;              // タッチが開始したかどうか
+
+    CCLabelTTF *scoreLabel;         // 現在のスコア
+    CCLabelTTF *countDownLabel;     // せり上がるまでのカウントダウン
+    CCLabelTTF *selectCountLabel;   // 現在選択中のサイコロの合計値が表示されるラベル
 }
 
 @property (nonatomic, retain) CCAnimate *animation;         // 爆発アニメーション（Tile側に持たせる）
 @property (nonatomic, readonly) BOOL isAddTileLine;         // せり上がりを発動させるかどうか
 @property (nonatomic, readonly) int isCurrentPointCheck;    // 選択中のサイコロの合計値の状態をチェックする
+@property (nonatomic, assign) int score;
+@property (nonatomic, assign) int currentTimerCount;        // 時間計測用。せり上がり判定などに使う
+@property (nonatomic, readonly) int currentRestTimeCount;   // せりあがる迄の時間
+@property (nonatomic, assign) int currentSelectTotalPoint;  // 現在のサイコロの値の合計値
 
 +(CCScene *)scene;
 
