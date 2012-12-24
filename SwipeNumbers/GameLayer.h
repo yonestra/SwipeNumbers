@@ -27,7 +27,7 @@ enum {
     CURRENT_POINT_OVER_TEN          // 合計値が10より大きい
 };
 
-@interface GameLayer : CCLayer <CCTargetedTouchDelegate> {
+@interface GameLayer : CCLayer <CCTargetedTouchDelegate, TileEventDelegate> {
     CCArray* tileList;              // 画面に表示されているタイルリスト
     CCAnimate *animate;             // 爆発アニメーション（不要？Tile側に持たせたいところ）
     int currentTimerCount;          // 時間計測用。せり上がり判定などに使う

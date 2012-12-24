@@ -99,6 +99,7 @@
         tile.position = CGPointMake(TILESIZE*(i%7)+TILESIZE/2+MARGIN_LEFT, TILESIZE*(i/7)+TILESIZE/2+80);
         tile.positionId = i;        // 位置番号
         tile.value = randValue;     // サイコロの値
+        tile.delegate = self;
         [tileList addObject:tile];  // リストに持っておく
         
         // レイヤーに追加
@@ -153,27 +154,6 @@
 }
 
 
-// positionIdのタイルの位置に爆発アニメーションを表示する
-// TODO: Tile側に持たせる
-- (void)disappearTileAtIndex:(int)positionId {
-    CCSprite *targetSprite = [tileList objectAtIndex:positionId];
-    
-    // 爆発を表示させる用のSpriteを用意する
-    CCSprite *burstSprite = [[[CCSprite alloc] init] autorelease];
-    burstSprite.position = targetSprite.position;
-    [self addChild:burstSprite z:10];
-    
-    // positionIdのタイルを消す
-    targetSprite.visible = NO;
-    
-    // 爆発アニメーションを開始
-    [burstSprite runAction:animate];
-    
-    // TODO: アニメーションが終わったら消す処理（タイマー？）
-}
-
-
-
 // タイマーを走らせる
 - (void)startTimer{
     NSTimer* tm = [NSTimer
@@ -188,6 +168,7 @@
 // 時間計測用メソッド. 1秒ごとに呼ばれる
 - (void)countTimer {
     currentTimerCount++;
+    CCLOG(@"timer[%d]", currentTimerCount);
     
     // せり上がりチェック（レベルによってタイミングは異なる）
     if (self.isAddTileLine) {
@@ -199,6 +180,25 @@
 // 最下段にタイルを一列追加する
 - (void)addTileLine {
     // TODO: 一列追加の処理
+    
+    // 既存のタイルをせりあがらせる
+    [self upAllTiles];
+    
+    for (int i=0; i<7; i++) {
+        // タイルオブジェクトを作る
+        int randValue = random()%6 + 1;
+        NSString *file = [NSString stringWithFormat:@"dice_%d.png", randValue];
+        Tile* tile = [[Tile alloc] initWithFile:file];
+        tile.position = CGPointMake(TILESIZE*(i%7)+TILESIZE/2+MARGIN_LEFT, TILESIZE*(i/7)+TILESIZE/2+80);
+        tile.positionId = i;        // 位置番号
+        tile.value = randValue;     // サイコロの値
+        tile.delegate = self;
+        [tileList addObject:tile];  // リストに持っておく
+        [self addChild:tile];
+    }
+    
+    // TODO: ゲームオーバーチェック
+    // tileListのサイズが50以上ならとかでOKなハズ
     
     // タイマーカウンタを初期化
     currentTimerCount = 0;
@@ -272,6 +272,40 @@
         if (tile.isHighlighted) {
             [tile burstWithAnimation];
         }
+    }
+}
+
+
+#pragma mark -
+#pragma mark TileEventDelegate
+
+- (void)removeTile:(Tile*)tile {
+    // 爆発したタイルをリストから除く
+    [tileList removeObject:tile];
+    
+    // 爆発した上のタイルを落とす
+    [self downTilesAtRemovedPoistionId:tile.positionId];
+}
+
+
+#pragma mark -
+
+// リストから除いたタイルの上に乗っていたタイルを一段落とす
+- (void)downTilesAtRemovedPoistionId:(int)positionId {
+    for (Tile* tile in tileList) {
+        // 7で割った余りが一緒 = 同じ列
+        if ((tile.positionId%7 == positionId%7) && (tile.positionId > positionId)) {
+            // タイルを１つ下に落とす
+            [tile downTile];
+        }
+    }
+}
+
+// 全てのタイルをせり上げる
+- (void)upAllTiles {
+    for (Tile* tile in tileList) {
+        // タイルを１つ下に落とす
+        [tile upTile];
     }
 }
 

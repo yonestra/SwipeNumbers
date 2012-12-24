@@ -13,6 +13,7 @@
 @synthesize positionId = _positionId;
 @synthesize value = _value;
 @synthesize isHighlighted =_isHighlighted;
+@synthesize delegate = _delegate;
 
 // 変数の初期化
 - (id)init {
@@ -77,7 +78,6 @@
 - (void)readyBurstAnimation {
     // 画像をアニメーション用のに切り替える
     
-    // 最後にブランクイメージを入れる？
     NSArray *fileNames  = [NSArray arrayWithObjects:
                            @"burst_01.png",
                            @"burst_02.png",
@@ -86,35 +86,50 @@
                            @"burst_05.png",
                            @"burst_06.png",
                            @"burst_07.png",
-                           @"burst_08.png",
-                           @"burst_09.png",
-                           @"burst_10.png",
-                           @"burst_11.png",
-                           @"burst_12.png",
                            nil];
     NSMutableArray *walkAnimFrames = [NSMutableArray array];
     for(NSString *fileName in fileNames){
         CCTexture2D * animTexture = [[CCTextureCache sharedTextureCache] addImage:fileName];
         CGSize size = [animTexture contentSize];
-        CGRect rect = CGRectMake(-7.5, -7.5, size.width+15, size.height+15);
+//        CGRect rect = CGRectMake(-7.5, -7.5, size.width+15, size.height+15);
+        CGRect rect = CGRectMake(0, 0, size.width, size.height);
         CCSpriteFrame * frame = [CCSpriteFrame frameWithTexture:animTexture rect:rect];
-        CCLOG(@"%@", frame);
         
         [walkAnimFrames addObject:frame];
     }
-    CCAnimation *walkAnim = [CCAnimation animationWithFrames:walkAnimFrames delay:0.1f ];
+    CCAnimation *walkAnim = [CCAnimation animationWithFrames:walkAnimFrames delay:0.07f ];
     animate  = [[CCAnimate actionWithAnimation:walkAnim restoreOriginalFrame:NO] retain];
 }
 
 // 爆発アニメーションを再生
 - (void)burstWithAnimation {
     // 自身を消す
-    self.visible = NO;
+//    self.visible = NO;
     highlightedFrame.visible = NO;
     
     // 爆発アニメーションを表示
     // TODO: CCActionManage: Assertion failureが出て落ちる
-//    [self runAction:animate];
+    [self runAction:animate];
+    
+    // 0.1秒後にオブジェクトを解放
+    NSTimer *tm = [NSTimer scheduledTimerWithTimeInterval:0.1f
+                                                   target:self
+                                                 selector:@selector(removeSelf)
+                                                 userInfo:NO
+                                                  repeats:NO];
+}
+
+// 自分自身を消す
+// TODO: 消す方法をこれに変える: http://hamasyou.com/blog/archives/000387
+- (void)removeSelf {
+    if ([_delegate respondsToSelector:@selector(removeTile:)]) {
+        [_delegate removeTile:self];
+    }
+    [self removeFromParentAndCleanup:YES];
+}
+
+- (void)setHighlightedOFF {
+    [self setHighlighted:NO];
 }
 
 // ハイライト状態を変更する. YES:ハイライトする NO:ハイライトを消す
@@ -125,6 +140,18 @@
 // 自分がハイライト状態かどうかを返す
 - (BOOL)isHighlighted {
     return highlightedFrame.visible;
+}
+
+// タイルを１つ上に移動
+- (void)upTile {
+    _positionId += 7;
+    self.position = CGPointMake(self.position.x, self.position.y + 45);
+}
+
+// タイルを１つ下の列に移動
+- (void)downTile {
+    _positionId -= 7;
+    self.position = CGPointMake(self.position.x, self.position.y - 45);
 }
 
 @end

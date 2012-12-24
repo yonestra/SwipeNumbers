@@ -25,11 +25,7 @@
     self = [super init];
     
     if (self) {
-        CCLabelTTF *label = [CCLabelTTF labelWithString:@"Hello World" fontName:@"Marker Felt" fontSize:64];
         CGSize size = [[CCDirector sharedDirector] winSize];
-        label.position =  ccp( size.width /2 , size.height/2 );
-        [self addChild: label];
-        
         CGRect rect = CGRectMake(0, size.height - 50, 320, 50);
         _bannerView = [[GADBannerView alloc] initWithFrame:rect];
         _bannerView.adUnitID = MY_BANNER_UNIT_ID;
