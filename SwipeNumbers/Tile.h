@@ -17,6 +17,7 @@
  */
 @interface Tile : CCSprite  {
     CCSprite *highlightedFrame;     // ハイライト時に表示するスプライト
+    CCSprite *gameOverFrame;        // ゲームオーバ時に表示するスプライト
     CCAnimate *animate;             // 爆発時のアニメーション
 }
 
@@ -32,6 +33,7 @@
 - (void)burstWithAnimation;                             // タイルを爆発させる
 - (int)upTile;                                          // タイルを１つ上にあげる
 - (void)downTile;                                       // タイルを１つ下に落とす
+- (void)showGameOverTile;                               // タイルをゲームオーバー表示する
 
 @end
 

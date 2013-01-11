@@ -252,14 +252,15 @@
     }
     
     // ゲームオーバー判定
-    if (maxTileHeight-1 > 7) {
-        UIAlertView *alert = [[UIAlertView alloc]
-                              initWithTitle:@"まけ"
-                              message:@"ゲームオーバー"
-                              delegate:self
-                              cancelButtonTitle:nil
-                              otherButtonTitles:@"OK", nil];
-        [alert show];
+    if (maxTileHeight > 6) {
+        [self showGameOver];
+//        UIAlertView *alert = [[UIAlertView alloc]
+//                              initWithTitle:@"まけ"
+//                              message:@"ゲームオーバー"
+//                              delegate:self
+//                              cancelButtonTitle:nil
+//                              otherButtonTitles:@"OK", nil];
+//        [alert show];
     }
     
     // タイマーカウンタを初期化
@@ -269,7 +270,7 @@
 // タイマーカウンタを見て、ブロックを追加するタイミングかをチェックする
 - (BOOL)isAddTileLine {
     // TODO: レベルの考慮
-    if (_currentTimerCount%10 == 0) {
+    if (_currentTimerCount%2 == 0) {
         // とりあえず、10秒毎に一列追加する
         return YES;
     }
@@ -422,6 +423,15 @@
 - (void)sixDiceFlush {
     
 }
+
+
+// ゲームオーバーの処理
+- (void)showGameOver {
+    for (Tile* tile in tileList) {
+        [tile showGameOverTile];
+    }
+}
+
 
 #pragma mark -
 #pragma mark TileEventDelegate

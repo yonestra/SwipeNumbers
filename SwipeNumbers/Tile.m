@@ -40,6 +40,13 @@
     [self addChild:highlightedFrame z:3];
     highlightedFrame.visible = NO;
     
+    // ゲームオーバ用フレームを用意
+    gameOverFrame = [[CCSprite alloc] initWithFile:@"selected2.png"];
+    gameOverFrame.position = CGPointMake(self.contentSize.width / 2, self.contentSize.height / 2);
+    gameOverFrame.opacity = 127;
+    [self addChild:gameOverFrame z:4];
+    gameOverFrame.visible = NO;
+    
     // 爆発アニメーションを用意
     [self readyBurstAnimation];
 }
@@ -149,6 +156,12 @@
 - (void)downTile {
     _positionId -= 7;
     self.position = CGPointMake(self.position.x, self.position.y - 45);
+}
+
+// タイルをゲームオーバー表示する
+- (void)showGameOverTile {
+    highlightedFrame.visible = NO;
+    gameOverFrame.visible = YES;
 }
 
 @end
