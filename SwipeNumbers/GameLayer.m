@@ -13,6 +13,12 @@
 @synthesize isAddTileLine = _isAddTileLine;
 @synthesize isCurrentPointCheck = _isCurrentPointCheck;
 @synthesize score = _score;
+@synthesize countOneDice = _countOneDice;
+@synthesize countTwoDice = _countTwoDice;
+@synthesize countThreeDice = _countThreeDice;
+@synthesize countFourDice = _countFourDice;
+@synthesize countFiveDice = _countFiveDice;
+@synthesize countSixDice = _countSixDice;
 @synthesize currentTimerCount = _currentTimerCount;
 @synthesize currentRestTimeCount = _currentRestTimeCount;
 @synthesize currentSelectTotalPoint = _currentSelectTotalPoint;
@@ -33,7 +39,13 @@
         // Initialize
         _currentTimerCount = 0;
         _currentSelectTotalPoint = 0;
-        _score;
+        _score = 0;
+        _countOneDice = 0;
+        _countTwoDice = 0;
+        _countThreeDice = 0;
+        _countFourDice = 0;
+        _countFiveDice = 0;
+        _countSixDice = 0;
         _isAddTileLine = NO;
         _isCurrentPointCheck = CURRENT_POINT_UNDER_TEN;
     }
@@ -88,6 +100,43 @@
     selectCountLabel.position = CGPointMake(280, self.contentSize.height - 20);
     selectCountLabel.color = ccc3(255, 255, 255);
     [self addChild:selectCountLabel z:1];
+    
+    // これまでに消したサイコロの数
+    // 1
+    diceOneLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial-BoldMT" fontSize:15];
+    diceOneLabel.position = CGPointMake(20, 65);
+    diceOneLabel.color = ccc3(255, 255, 255);
+    [self addChild:diceOneLabel z:1];
+    
+    // 2
+    diceTwoLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial-BoldMT" fontSize:15];
+    diceTwoLabel.position = CGPointMake(50, 65);
+    diceTwoLabel.color = ccc3(255, 255, 255);
+    [self addChild:diceTwoLabel z:1];
+    
+    // 3
+    diceThreeLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial-BoldMT" fontSize:15];
+    diceThreeLabel.position = CGPointMake(80, 65);
+    diceThreeLabel.color = ccc3(255, 255, 255);
+    [self addChild:diceThreeLabel z:1];
+    
+    // 4
+    diceFourLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial-BoldMT" fontSize:15];
+    diceFourLabel.position = CGPointMake(110, 65);
+    diceFourLabel.color = ccc3(255, 255, 255);
+    [self addChild:diceFourLabel z:1];
+    
+    // 5
+    diceFiveLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial-BoldMT" fontSize:15];
+    diceFiveLabel.position = CGPointMake(140, 65);
+    diceFiveLabel.color = ccc3(255, 255, 255);
+    [self addChild:diceFiveLabel z:1];
+    
+    // 6
+    diceSixLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial-BoldMT" fontSize:15];
+    diceSixLabel.position = CGPointMake(170, 65);
+    diceSixLabel.color = ccc3(255, 255, 255);
+    [self addChild:diceSixLabel z:1];
 }
 
 // 画面いっぱい(49枚)のタイルを作って並べる
@@ -288,11 +337,91 @@
 - (void)burstSelectedTiles {
     for (Tile* tile in tileList) {
         if (tile.isHighlighted) {
+            [self countDice:tile.value];
             [tile burstWithAnimation];
         }
     }
 }
 
+// 消したサイコロの種類を数える
+- (void)countDice:(NSInteger)diceValue {
+    switch (diceValue) {
+        case 1:
+            self.countOneDice++;
+            if (_countOneDice >= DICE_COUNT_FLUSH_TRIGGER) {
+                [self oneDiceFlush];
+                self.countOneDice -= DICE_COUNT_FLUSH_TRIGGER;
+            }
+            break;
+        case 2:
+            self.countTwoDice++;
+            if (_countTwoDice >= DICE_COUNT_FLUSH_TRIGGER) {
+                [self twoDiceFlush];
+                self.countTwoDice -= DICE_COUNT_FLUSH_TRIGGER;
+            }
+            break;
+        case 3:
+            self.countThreeDice++;
+            if (_countThreeDice >= DICE_COUNT_FLUSH_TRIGGER) {
+                [self threeDiceFlush];
+                self.countThreeDice -= DICE_COUNT_FLUSH_TRIGGER;
+            }
+            break;
+        case 4:
+            self.countFourDice++;
+            if (_countFourDice >= DICE_COUNT_FLUSH_TRIGGER) {
+                [self fourDiceFlush];
+                self.countFourDice -= DICE_COUNT_FLUSH_TRIGGER;
+            }
+            break;
+        case 5:
+            self.countFiveDice++;
+            if (_countFiveDice >= DICE_COUNT_FLUSH_TRIGGER) {
+                [self fiveDiceFlush];
+                self.countFiveDice -= DICE_COUNT_FLUSH_TRIGGER;
+            }
+            break;
+        case 6:
+            self.countSixDice++;
+            if (_countSixDice >= DICE_COUNT_FLUSH_TRIGGER) {
+                [self sixDiceFlush];
+                self.countSixDice -= DICE_COUNT_FLUSH_TRIGGER;
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+// 「1」が20個揃った時の効果
+- (void)oneDiceFlush {
+    
+}
+
+// 「2」が20個揃った時の効果
+- (void)twoDiceFlush {
+    
+}
+
+// 「3」が20個揃った時の効果
+- (void)threeDiceFlush {
+    
+}
+
+// 「4」が20個揃った時の効果
+- (void)fourDiceFlush {
+    
+}
+
+// 「5」が20個揃った時の効果
+- (void)fiveDiceFlush {
+    
+}
+
+// 「6」が20個揃った時の効果
+- (void)sixDiceFlush {
+    
+}
 
 #pragma mark -
 #pragma mark TileEventDelegate
@@ -359,6 +488,42 @@
 - (void)setCurrentSelectTotalPoint:(int)currentSelectTotalPoint {
     _currentSelectTotalPoint = currentSelectTotalPoint;
     selectCountLabel.string = [NSString stringWithFormat:@"%d/10", _currentSelectTotalPoint];
+}
+
+// 1 のダイスが消された
+- (void)setCountOneDice:(int)countOneDice {
+    _countOneDice = countOneDice;
+    diceOneLabel.string = [NSString stringWithFormat:@"%d", _countOneDice];
+}
+
+// 2 のダイスが消された
+- (void)setCountTwoDice:(int)countTwoDice {
+    _countTwoDice = countTwoDice;
+    diceTwoLabel.string = [NSString stringWithFormat:@"%d", _countTwoDice];
+}
+
+// 3 のダイスが消された
+- (void)setCountThreeDice:(int)countThreeDice {
+    _countThreeDice = countThreeDice;
+    diceThreeLabel.string = [NSString stringWithFormat:@"%d", _countThreeDice];
+}
+
+// 4 のダイスが消された
+- (void)setCountFourDice:(int)countFourDice {
+    _countFourDice = countFourDice;
+    diceFourLabel.string = [NSString stringWithFormat:@"%d", _countFourDice];
+}
+
+// 5 のダイスが消された
+- (void)setCountFiveDice:(int)countFiveDice {
+    _countFiveDice = countFiveDice;
+    diceFiveLabel.string = [NSString stringWithFormat:@"%d", _countFiveDice];
+}
+
+// 6 のダイスが消された
+- (void)setCountSixDice:(int)countSixDice {
+    _countSixDice = countSixDice;
+    diceSixLabel.string = [NSString stringWithFormat:@"%d", _countSixDice];
 }
 
 @end

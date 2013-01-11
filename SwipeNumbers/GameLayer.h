@@ -20,6 +20,9 @@
 // マージン設定
 #define MARGIN_LEFT (320-TILESIZE*7)/2
 
+// 効果が発生するダイスの消費個数
+#define DICE_COUNT_FLUSH_TRIGGER 20
+
 // 選択中のサイコロの値の合計値の状態を表す変数列挙
 enum {
     CURRENT_POINT_UNDER_TEN = 0,    // 合計値が10より小さい
@@ -35,12 +38,26 @@ enum {
     CCLabelTTF *scoreLabel;         // 現在のスコア
     CCLabelTTF *countDownLabel;     // せり上がるまでのカウントダウン
     CCLabelTTF *selectCountLabel;   // 現在選択中のサイコロの合計値が表示されるラベル
+    
+    CCLabelTTF *diceOneLabel;       // 1のサイコロを消した数
+    CCLabelTTF *diceTwoLabel;       // 2のサイコロを消した数
+    CCLabelTTF *diceThreeLabel;     // 3のサイコロを消した数
+    CCLabelTTF *diceFourLabel;      // 4のサイコロを消した数
+    CCLabelTTF *diceFiveLabel;      // 5のサイコロを消した数
+    CCLabelTTF *diceSixLabel;       // 6のサイコロを消した数
+    
 }
 
 @property (nonatomic, retain) CCAnimate *animation;         // 爆発アニメーション（Tile側に持たせる）
 @property (nonatomic, readonly) BOOL isAddTileLine;         // せり上がりを発動させるかどうか
 @property (nonatomic, readonly) int isCurrentPointCheck;    // 選択中のサイコロの合計値の状態をチェックする
-@property (nonatomic, assign) int score;
+@property (nonatomic, assign) int score;                    // 現在のスコア
+@property (nonatomic, assign) int countOneDice;             // 1を消した合計数
+@property (nonatomic, assign) int countTwoDice;             // 2を消した合計数
+@property (nonatomic, assign) int countThreeDice;           // 3を消した合計数
+@property (nonatomic, assign) int countFourDice;            // 4を消した合計数
+@property (nonatomic, assign) int countFiveDice;            // 5を消した合計数
+@property (nonatomic, assign) int countSixDice;             // 6を消した合計数
 @property (nonatomic, assign) int currentTimerCount;        // 時間計測用。せり上がり判定などに使う
 @property (nonatomic, readonly) int currentRestTimeCount;   // せりあがる迄の時間
 @property (nonatomic, assign) int currentSelectTotalPoint;  // 現在のサイコロの値の合計値
