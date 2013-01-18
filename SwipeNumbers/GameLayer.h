@@ -38,14 +38,16 @@ enum {
     CCLabelTTF *scoreLabel;         // 現在のスコア
     CCLabelTTF *countDownLabel;     // せり上がるまでのカウントダウン
     CCLabelTTF *selectCountLabel;   // 現在選択中のサイコロの合計値が表示されるラベル
+    CCLabelTTF *diceSixLabel;       // ゲームオーバーの文字列
     
     CCLabelTTF *diceOneLabel;       // 1のサイコロを消した数
     CCLabelTTF *diceTwoLabel;       // 2のサイコロを消した数
     CCLabelTTF *diceThreeLabel;     // 3のサイコロを消した数
     CCLabelTTF *diceFourLabel;      // 4のサイコロを消した数
     CCLabelTTF *diceFiveLabel;      // 5のサイコロを消した数
-    CCLabelTTF *diceSixLabel;       // 6のサイコロを消した数
+    CCLabelTTF *gameOverLabel;       // 6のサイコロを消した数
     
+    NSTimer* tm;                    // タイマー
 }
 
 @property (nonatomic, retain) CCAnimate *animation;         // 爆発アニメーション（Tile側に持たせる）

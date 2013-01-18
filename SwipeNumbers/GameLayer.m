@@ -101,6 +101,13 @@
     selectCountLabel.color = ccc3(255, 255, 255);
     [self addChild:selectCountLabel z:1];
     
+    // 「ゲームオーバー」
+    gameOverLabel = [CCLabelTTF labelWithString:@"ゲームオーバー" fontName:@"Arial-BoldMT" fontSize:40];
+    gameOverLabel.position = CGPointMake(160, 240);
+    gameOverLabel.color = ccc3(255, 255, 255);
+    [self addChild:gameOverLabel];
+    gameOverLabel.visible = NO;
+    
     // これまでに消したサイコロの数
     // 1
     diceOneLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial-BoldMT" fontSize:15];
@@ -137,6 +144,7 @@
     diceSixLabel.position = CGPointMake(170, 65);
     diceSixLabel.color = ccc3(255, 255, 255);
     [self addChild:diceSixLabel z:1];
+    
 }
 
 // 画面いっぱい(49枚)のタイルを作って並べる
@@ -210,7 +218,7 @@
 
 // タイマーを走らせる
 - (void)startTimer{
-    NSTimer* tm = [NSTimer
+    tm = [NSTimer
           scheduledTimerWithTimeInterval:1
           target:self
           selector:@selector(countTimer)
@@ -430,6 +438,12 @@
     for (Tile* tile in tileList) {
         [tile showGameOverTile];
     }
+    
+    // タイマー停止
+    [tm invalidate];
+    
+    // 「ゲームオーバー」表示
+    gameOverLabel.visible = YES;
 }
 
 
