@@ -85,21 +85,21 @@
 - (void)initLayout {
     // スコアラベル
     scoreLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial-BoldMT" fontSize:30];
-    scoreLabel.position = CGPointMake(80, self.contentSize.height - 20);
-    scoreLabel.color = ccc3(255, 100, 40);
+    scoreLabel.position = CGPointMake(50, self.contentSize.height - 20);
+    scoreLabel.color = ccc3(255, 255, 255);
     [self addChild:scoreLabel z:1];
     
     // せり上がる迄のカウントダウン
-    countDownLabel = [CCLabelTTF labelWithString:@"0:10" fontName:@"Arial-BoldMT" fontSize:20];
-    countDownLabel.position = CGPointMake(200, self.contentSize.height - 20);
-    countDownLabel.color = ccc3(255, 100, 40);
-    [self addChild:countDownLabel z:1];
+//    countDownLabel = [CCLabelTTF labelWithString:@"0:10" fontName:@"Arial-BoldMT" fontSize:20];
+//    countDownLabel.position = CGPointMake(200, self.contentSize.height - 20);
+//    countDownLabel.color = ccc3(255, 100, 40);
+//    [self addChild:countDownLabel z:1];
     
     // 現在選択中のサイの合計値
-    selectCountLabel = [CCLabelTTF labelWithString:@"0/10" fontName:@"Arial-BoldMT" fontSize:30];
-    selectCountLabel.position = CGPointMake(280, self.contentSize.height - 20);
-    selectCountLabel.color = ccc3(255, 255, 255);
-    [self addChild:selectCountLabel z:1];
+//    selectCountLabel = [CCLabelTTF labelWithString:@"0/10" fontName:@"Arial-BoldMT" fontSize:30];
+//    selectCountLabel.position = CGPointMake(280, self.contentSize.height - 20);
+//    selectCountLabel.color = ccc3(255, 255, 255);
+//    [self addChild:selectCountLabel z:1];
     
     // 「ゲームオーバー」
     gameOverLabel = [CCLabelTTF labelWithString:@"ゲームオーバー" fontName:@"Arial-BoldMT" fontSize:40];
@@ -108,43 +108,102 @@
     [self addChild:gameOverLabel];
     gameOverLabel.visible = NO;
     
-    // これまでに消したサイコロの数
-    // 1
-    diceOneLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial-BoldMT" fontSize:15];
-    diceOneLabel.position = CGPointMake(20, 65);
+    float x = 140;
+    float y = self.contentSize.height-20;
+    
+    // これまでに消したサイコロの数パネル
+    // 1-画像
+    CCSprite* diceOneImage = [[CCSprite alloc] initWithFile:@"dice_1.png"];
+    diceOneImage.scale = 0.4;
+    diceOneImage.position = CGPointMake(x, y);
+    [self addChild:diceOneImage z:1];
+    
+    // 1-ラベル
+    x += 20;
+    diceOneLabel = [CCLabelTTF labelWithString:@"×0" fontName:@"Arial-BoldMT" fontSize:15];
+    diceOneLabel.position = CGPointMake(x, y);
     diceOneLabel.color = ccc3(255, 255, 255);
     [self addChild:diceOneLabel z:1];
     
-    // 2
-    diceTwoLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial-BoldMT" fontSize:15];
-    diceTwoLabel.position = CGPointMake(50, 65);
+    // 2-画像
+    x += 25;
+    CCSprite* diceTwoImage = [[CCSprite alloc] initWithFile:@"dice_2.png"];
+    diceTwoImage.scale = 0.4;
+    diceTwoImage.position = CGPointMake(x, y);
+    [self addChild:diceTwoImage z:1];
+    
+    // 2-ラベル
+    x += 20;
+    diceTwoLabel = [CCLabelTTF labelWithString:@"×0" fontName:@"Arial-BoldMT" fontSize:15];
+    diceTwoLabel.position = CGPointMake(x, y);
     diceTwoLabel.color = ccc3(255, 255, 255);
     [self addChild:diceTwoLabel z:1];
     
-    // 3
-    diceThreeLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial-BoldMT" fontSize:15];
-    diceThreeLabel.position = CGPointMake(80, 65);
+    // 3-画像
+    x += 25;
+    CCSprite* diceThreeImage = [[CCSprite alloc] initWithFile:@"dice_3.png"];
+    diceThreeImage.scale = 0.4;
+    diceThreeImage.position = CGPointMake(x, y);
+    [self addChild:diceThreeImage z:1];
+    
+    // 3-ラベル
+    x += 20;
+    diceThreeLabel = [CCLabelTTF labelWithString:@"×0" fontName:@"Arial-BoldMT" fontSize:15];
+    diceThreeLabel.position = CGPointMake(x, y);
     diceThreeLabel.color = ccc3(255, 255, 255);
     [self addChild:diceThreeLabel z:1];
     
-    // 4
-    diceFourLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial-BoldMT" fontSize:15];
-    diceFourLabel.position = CGPointMake(110, 65);
+    // 4-画像
+    x = 140;
+    y -= 20;
+    CCSprite* diceFourImage = [[CCSprite alloc] initWithFile:@"dice_4.png"];
+    diceFourImage.scale = 0.4;
+    diceFourImage.position = CGPointMake(x, y);
+    [self addChild:diceFourImage z:1];
+    
+    // 4-ラベル
+    x += 20;
+    diceFourLabel = [CCLabelTTF labelWithString:@"×0" fontName:@"Arial-BoldMT" fontSize:15];
+    diceFourLabel.position = CGPointMake(x, y);
     diceFourLabel.color = ccc3(255, 255, 255);
     [self addChild:diceFourLabel z:1];
     
-    // 5
-    diceFiveLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial-BoldMT" fontSize:15];
-    diceFiveLabel.position = CGPointMake(140, 65);
+    // 5-画像
+    x += 25;
+    CCSprite* diceFiveImage = [[CCSprite alloc] initWithFile:@"dice_5.png"];
+    diceFiveImage.scale = 0.4;
+    diceFiveImage.position = CGPointMake(x, y);
+    [self addChild:diceFiveImage z:1];
+    
+    // 5-ラベル
+    x += 20;
+    diceFiveLabel = [CCLabelTTF labelWithString:@"×0" fontName:@"Arial-BoldMT" fontSize:15];
+    diceFiveLabel.position = CGPointMake(x, y);
     diceFiveLabel.color = ccc3(255, 255, 255);
     [self addChild:diceFiveLabel z:1];
     
-    // 6
-    diceSixLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial-BoldMT" fontSize:15];
-    diceSixLabel.position = CGPointMake(170, 65);
+    // 6-画像
+    x += 25;
+    CCSprite* diceSixImage = [[CCSprite alloc] initWithFile:@"dice_6.png"];
+    diceSixImage.scale = 0.4;
+    diceSixImage.position = CGPointMake(x, y);
+    [self addChild:diceSixImage z:1];
+    
+    // 6-ラベル
+    x += 20;
+    diceSixLabel = [CCLabelTTF labelWithString:@"×0" fontName:@"Arial-BoldMT" fontSize:15];
+    diceSixLabel.position = CGPointMake(x, y);
     diceSixLabel.color = ccc3(255, 255, 255);
     [self addChild:diceSixLabel z:1];
     
+    
+    // 一時停止ボタン
+    x += 40;
+    y += 10;
+    CCSprite* pauseButton = [[CCSprite alloc] initWithFile:@"dice_6.png"];
+    pauseButton.scale = 0.8;
+    pauseButton.position = CGPointMake(x, y);
+    [self addChild:pauseButton z:1];
 }
 
 // 画面いっぱい(49枚)のタイルを作って並べる
@@ -158,7 +217,7 @@
         // タイルオブジェクトを作る
         NSString *file = [NSString stringWithFormat:@"dice_%d.png", randValue];
         Tile* tile = [[Tile alloc] initWithFile:file];
-        tile.position = CGPointMake(TILESIZE*(i%7)+TILESIZE/2+MARGIN_LEFT, TILESIZE*(i/7)+TILESIZE/2+80);
+        tile.position = CGPointMake(TILESIZE*(i%7)+TILESIZE/2+MARGIN_LEFT, TILESIZE*(i/7)+TILESIZE/2+60);
         tile.positionId = i;        // 位置番号
         tile.value = randValue;     // サイコロの値
         tile.delegate = self;
@@ -252,7 +311,7 @@
         int randValue = random()%6 + 1;
         NSString *file = [NSString stringWithFormat:@"dice_%d.png", randValue];
         Tile* tile = [[Tile alloc] initWithFile:file];
-        tile.position = CGPointMake(TILESIZE*(i%7)+TILESIZE/2+MARGIN_LEFT, TILESIZE*(i/7)+TILESIZE/2+80);
+        tile.position = CGPointMake(TILESIZE*(i%7)+TILESIZE/2+MARGIN_LEFT, TILESIZE*(i/7)+TILESIZE/2+60);
         tile.positionId = i;        // 位置番号
         tile.value = randValue;     // サイコロの値
         tile.delegate = self;
@@ -518,25 +577,25 @@
 // 1 のダイスが消された
 - (void)setCountOneDice:(int)countOneDice {
     _countOneDice = countOneDice;
-    diceOneLabel.string = [NSString stringWithFormat:@"%d", _countOneDice];
+    diceOneLabel.string = [NSString stringWithFormat:@"×%d", _countOneDice];
 }
 
 // 2 のダイスが消された
 - (void)setCountTwoDice:(int)countTwoDice {
     _countTwoDice = countTwoDice;
-    diceTwoLabel.string = [NSString stringWithFormat:@"%d", _countTwoDice];
+    diceTwoLabel.string = [NSString stringWithFormat:@"×%d", _countTwoDice];
 }
 
 // 3 のダイスが消された
 - (void)setCountThreeDice:(int)countThreeDice {
     _countThreeDice = countThreeDice;
-    diceThreeLabel.string = [NSString stringWithFormat:@"%d", _countThreeDice];
+    diceThreeLabel.string = [NSString stringWithFormat:@"×%d", _countThreeDice];
 }
 
 // 4 のダイスが消された
 - (void)setCountFourDice:(int)countFourDice {
     _countFourDice = countFourDice;
-    diceFourLabel.string = [NSString stringWithFormat:@"%d", _countFourDice];
+    diceFourLabel.string = [NSString stringWithFormat:@"×%d", _countFourDice];
 }
 
 // 5 のダイスが消された
@@ -548,7 +607,7 @@
 // 6 のダイスが消された
 - (void)setCountSixDice:(int)countSixDice {
     _countSixDice = countSixDice;
-    diceSixLabel.string = [NSString stringWithFormat:@"%d", _countSixDice];
+    diceSixLabel.string = [NSString stringWithFormat:@"×%d", _countSixDice];
 }
 
 

@@ -21,7 +21,7 @@
 #define MARGIN_LEFT (320-TILESIZE*7)/2
 
 // 効果が発生するダイスの消費個数
-#define DICE_COUNT_FLUSH_TRIGGER 1
+#define DICE_COUNT_FLUSH_TRIGGER 10
 
 // ゲームオーバーとなる高さ（列）
 #define GAME_OVER_LINE 6
