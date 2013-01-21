@@ -19,6 +19,8 @@
     CCSprite *highlightedFrame;     // ハイライト時に表示するスプライト
     CCSprite *gameOverFrame;        // ゲームオーバ時に表示するスプライト
     CCAnimate *animate;             // 爆発時のアニメーション
+    BOOL isBursting;                // 爆発中かどうか
+    id act;
 }
 
 @property (nonatomic, assign) int positionId;           // タイルの場所を表す値
@@ -30,6 +32,7 @@
 
 - (BOOL)containsTouchLocation:(UITouch *)touch;         // touchの対象タイルかどうかを返す
 - (void)setHighlighted:(BOOL)highlighted;               // タイルの選択状態を切り替える
+- (void)changeTileValue:(int)newValue;            // タイルの数字を更新する
 - (void)burstWithAnimation;                             // タイルを爆発させる
 - (int)upTile;                                          // タイルを１つ上にあげる
 - (void)downTile;                                       // タイルを１つ下に落とす

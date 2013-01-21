@@ -231,6 +231,7 @@
 - (void)countTimer {
     self.currentTimerCount++;
     CCLOG(@"timer[%d]", _currentTimerCount);
+    CCLOG(@"tileList[%d]", [tileList count]);
     
     // せり上がりチェック（レベルによってタイミングは異なる）
     if (self.isAddTileLine) {
@@ -260,7 +261,7 @@
     }
     
     // ゲームオーバー判定
-    if (maxTileHeight > 6) {
+    if (maxTileHeight > GAME_OVER_LINE) {
         [self showGameOver];
 //        UIAlertView *alert = [[UIAlertView alloc]
 //                              initWithTitle:@"まけ"
@@ -278,7 +279,7 @@
 // タイマーカウンタを見て、ブロックを追加するタイミングかをチェックする
 - (BOOL)isAddTileLine {
     // TODO: レベルの考慮
-    if (_currentTimerCount%2 == 0) {
+    if (_currentTimerCount%BLOCK_ADD_TIME == 0) {
         // とりあえず、10秒毎に一列追加する
         return YES;
     }
@@ -346,8 +347,8 @@
 - (void)burstSelectedTiles {
     for (Tile* tile in tileList) {
         if (tile.isHighlighted) {
-            [self countDice:tile.value];
             [tile burstWithAnimation];
+            [self countDice:tile.value];
         }
     }
 }
@@ -404,17 +405,17 @@
 
 // 「1」が20個揃った時の効果
 - (void)oneDiceFlush {
-    
+    [self burstAllOneDice];
 }
 
 // 「2」が20個揃った時の効果
 - (void)twoDiceFlush {
-    
+    [self burstFirstRowLine];
 }
 
 // 「3」が20個揃った時の効果
 - (void)threeDiceFlush {
-    
+
 }
 
 // 「4」が20個揃った時の効果
@@ -504,7 +505,7 @@
 
 // 「残りX秒」のXの部分を計算して返す
 - (int)currentRestTimeCount {
-    int limit = 10;
+    int limit = BLOCK_ADD_TIME;
     return (limit - _currentTimerCount);
 }
 
@@ -549,5 +550,27 @@
     _countSixDice = countSixDice;
     diceSixLabel.string = [NSString stringWithFormat:@"%d", _countSixDice];
 }
+
+
+/////// Special /////////
+
+// 「1」のダイスを全消し
+- (void)burstAllOneDice {
+    for (Tile* tile in tileList) {
+        if (tile.value == 1 && [tile isHighlighted] == NO) {
+            [tile burstWithAnimation];
+        }
+    }
+}
+
+// 左端の一列を消す
+- (void)burstFirstRowLine {
+    for (Tile* tile in tileList) {
+        if (tile.positionId%7 == 0 && [tile isHighlighted] == NO) {
+            [tile burstWithAnimation];
+        }
+    }
+}
+
 
 @end

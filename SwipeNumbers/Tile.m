@@ -16,10 +16,11 @@
 @synthesize delegate = _delegate;
 
 // 変数の初期化
-- (id)init {
-    if (self = [super init]) {
+- (id)initWithFile:(NSString *)filename {
+    if (self = [super initWithFile:filename]) {
         _positionId = -1;
         _value = 0;
+        isBursting = NO;
     }
     return self;
 }
@@ -104,26 +105,34 @@
         
         [walkAnimFrames addObject:frame];
     }
-    CCAnimation *walkAnim = [CCAnimation animationWithFrames:walkAnimFrames delay:0.1f ];
-    animate  = [[CCAnimate actionWithAnimation:walkAnim restoreOriginalFrame:NO] retain];
+    CCAnimation *walkAnim = [CCAnimation animationWithFrames:walkAnimFrames delay:0.05f];
+    animate  = [CCAnimate actionWithAnimation:walkAnim];
+    
+    //アニメのアクションをアクション実行用データに追加
+    act = [[CCSequence actions:animate, nil] retain];
+
 }
 
 // 爆発アニメーションを再生
 - (void)burstWithAnimation {
     // 自身を消す
-//    self.visible = NO;
     highlightedFrame.visible = NO;
     
     // 爆発アニメーションを表示
     // TODO: CCActionManage: Assertion failureが出て落ちる
-    [self runAction:animate];
+    // → 既に爆発アニメーション中は、無視するように設定
+    if (isBursting == NO) {
+        isBursting = YES;
+        [self runAction:act];
+    }
     
     // 0.1秒後にオブジェクトを解放
-    NSTimer *tm = [NSTimer scheduledTimerWithTimeInterval:0.1f
+    NSTimer *tm = [NSTimer scheduledTimerWithTimeInterval:0.3f
                                                    target:self
                                                  selector:@selector(removeSelf)
                                                  userInfo:NO
                                                   repeats:NO];
+
 }
 
 // 自分自身を消す
@@ -133,6 +142,7 @@
         [_delegate removeTile:self];
     }
     [self removeFromParentAndCleanup:YES];
+    isBursting = NO;
 }
 
 // ハイライト状態を変更する. YES:ハイライトする NO:ハイライトを消す
@@ -163,5 +173,6 @@
     highlightedFrame.visible = NO;
     gameOverFrame.visible = YES;
 }
+
 
 @end
