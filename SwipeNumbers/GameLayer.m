@@ -279,7 +279,7 @@
 // タイマーを走らせる
 - (void)startTimer{
     tm = [NSTimer
-          scheduledTimerWithTimeInterval:0.3
+          scheduledTimerWithTimeInterval:0.2
           target:self
           selector:@selector(countTimer)
           userInfo:nil
@@ -293,16 +293,18 @@
 //    CCLOG(@"timer[%d]", _currentTimerCount);
 //    CCLOG(@"tileList[%d]", [tileList count]);
     
-    // せり上がりチェック（レベルによってタイミングは異なる）
-    if (self.isAddTileLine) {
-        // 一列分せり上がらせる
-        [self addTileLine];
+    if (self.currentTimerCount%BLOCK_UP_SPEED == 0) {
+        // せり上がりチェック（レベルによってタイミングは異なる）
+        if (self.isAddTileLine) {
+            // 一列分せり上がらせる
+            [self addTileLine];
+        }
+        
+        // 既存のタイルをちょっとせり上がり
+        if ([self upAllTiles] > 45*GAME_OVER_LINE) {
+            [self showGameOver];
+        };
     }
-    
-    // 既存のタイルをちょっとせり上がり
-    if ([self upAllTiles] > 45*GAME_OVER_LINE) {
-        [self showGameOver];
-    };
 }
 
 // 最下段にタイルを一列追加する
