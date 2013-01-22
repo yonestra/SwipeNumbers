@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
 
+#define TILE_MOVE_UP_DELTA  5   // タイルの一回の移動量(px)
+
 @protocol TileEventDelegate;
 
 /**
@@ -19,15 +21,14 @@
     CCSprite *highlightedFrame;     // ハイライト時に表示するスプライト
     CCSprite *gameOverFrame;        // ゲームオーバ時に表示するスプライト
     CCAnimate *animate;             // 爆発時のアニメーション
+    id actBurst;                    // 爆発時に表示するアニメーション群
     BOOL isBursting;                // 爆発中かどうか
-    id act;
+    int height;                     // 現在のタイルの高さ
 }
 
 @property (nonatomic, assign) int positionId;           // タイルの場所を表す値
 @property (nonatomic, assign) int value;                // タイルのサイコロ値（1~6）
 @property (nonatomic, readonly) BOOL isHighlighted;     // タイルがハイライト状態かどうか
-@property (nonatomic, assign) BOOL isTouchabled;        // タッチ可能かどうか
-@property (nonatomic, assign) int height;               // 現在の高さ
 
 @property (nonatomic, assign) id<TileEventDelegate> delegate; 
 

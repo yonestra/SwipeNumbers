@@ -48,6 +48,8 @@
         _countSixDice = 0;
         _isAddTileLine = NO;
         _isCurrentPointCheck = CURRENT_POINT_UNDER_TEN;
+        
+        blockUpSpeed = BLOCK_UP_SPEED_DEFAULT;
     }
     return self;
 }
@@ -196,8 +198,8 @@
     diceSixLabel.color = ccc3(255, 255, 255);
     [self addChild:diceSixLabel z:1];
     
-    
     // 一時停止ボタン
+    // TODO: 画像ファイル差し替え
     x += 40;
     y += 10;
     CCSprite* pauseButton = [[CCSprite alloc] initWithFile:@"dice_6.png"];
@@ -206,11 +208,11 @@
     [self addChild:pauseButton z:1];
 }
 
-// 画面いっぱい(49枚)のタイルを作って並べる
+// 初期配置のタイルを作って並べる
 - (void)arrangeTiles {
-    // タイルを作成
+    
+    // 初期タイルを作成
     for (int i=0; i<NUMBER_OF_READY_FOR_TILES; i++) {
-        
         // 1~6の数字を作る
         int randValue = random()%6 + 1;
         
@@ -218,11 +220,10 @@
         NSString *file = [NSString stringWithFormat:@"dice_%d.png", randValue];
         Tile* tile = [[Tile alloc] initWithFile:file];
         tile.position = CGPointMake(TILESIZE*(i%7)+TILESIZE/2+MARGIN_LEFT, TILESIZE*(i/7)+TILESIZE/2+15);
-        tile.positionId = i;        // 位置番号
-        tile.value = randValue;     // サイコロの値
-        tile.isTouchabled = YES;    // 最初からタッチ可能に
+        tile.positionId = i;            // 位置番号
+        tile.value = randValue;         // サイコロの値
         tile.delegate = self;
-        [tileList addObject:tile];  // リストに持っておく
+        [tileList addObject:tile];      // リストに持っておく
         
         // レイヤーに追加
         [self addChild:tile z:1];
@@ -278,6 +279,7 @@
 
 // タイマーを走らせる
 - (void)startTimer{
+    // 0.2秒間隔で countTimer メソッドを呼び出し
     tm = [NSTimer
           scheduledTimerWithTimeInterval:0.2
           target:self
@@ -287,21 +289,21 @@
           ];
 }
 
-// 時間計測用メソッド. 1秒ごとに呼ばれる
+// 時間計測用メソッド. 経過時間に応じて処理を変えたりする
 - (void)countTimer {
     self.currentTimerCount++;
 //    CCLOG(@"timer[%d]", _currentTimerCount);
-//    CCLOG(@"tileList[%d]", [tileList count]);
+    CCLOG(@"tileList[%d]", [tileList count]);
     
     if (self.currentTimerCount%BLOCK_UP_SPEED == 0) {
-        // せり上がりチェック（レベルによってタイミングは異なる）
-        if (self.isAddTileLine) {
-            // 一列分せり上がらせる
+
+        // タイルを一列追加する
+        if (self.currentTimerCount%BLOCK_ADD_TIME == 0) {
             [self addTileLine];
         }
         
-        // 既存のタイルをちょっとせり上がり
-        if ([self upAllTiles] > 45*GAME_OVER_LINE) {
+        // 既存のタイルをちょっとせり上がらせる
+        if ([self upAllTiles] > TILESIZE*GAME_OVER_LINE) {
             [self showGameOver];
         };
     }
@@ -316,26 +318,11 @@
         Tile* tile = [[Tile alloc] initWithFile:file];
         tile.position = CGPointMake(TILESIZE*(i%7)+TILESIZE/2+MARGIN_LEFT, TILESIZE*(i/7)+TILESIZE/2+10);
         tile.positionId = i;        // 位置番号
-        tile.height = i/7 * TILESIZE;     // 始めの高さ
         tile.value = randValue;     // サイコロの値
-//        tile.isTouchabled = NO;     // はじめはタッチ不能に
         tile.delegate = self;
         [tileList addObject:tile];  // リストに持っておく
         [self addChild:tile];       // 画面に表示する
     }
-    
-    // タイマーカウンタを初期化
-    self.currentTimerCount = 0;
-}
-
-// タイマーカウンタを見て、ブロックを追加するタイミングかをチェックする
-- (BOOL)isAddTileLine {
-    // TODO: レベルの考慮
-    if (_currentTimerCount%BLOCK_ADD_TIME == 0) {
-        // とりあえず、10秒毎に一列追加する
-        return YES;
-    }
-    return NO;
 }
 
 // 現在なぞり中のサイコロの合計値のステータスをチェック
@@ -353,9 +340,6 @@
 // タッチした領域に衝突するタイルを探す
 - (void)collesionTileAction:(UITouch*)touch {
     for (Tile* tile in tileList) {
-        if (tile.isTouchabled == NO) {
-            continue;
-        }
         BOOL result = [tile containsTouchLocation:touch];
         if (result) {
             // 衝突したタイルを選択状態にする
@@ -506,6 +490,7 @@
 #pragma mark -
 #pragma mark TileEventDelegate
 
+// このメソッドはTileオブジェクトからデリゲートとして呼ばれる
 - (void)removeTile:(Tile*)tile {
     // 爆発したタイルをリストから除く
     [tileList removeObject:tile];
@@ -598,7 +583,7 @@
 // 5 のダイスが消された
 - (void)setCountFiveDice:(int)countFiveDice {
     _countFiveDice = countFiveDice;
-    diceFiveLabel.string = [NSString stringWithFormat:@"%d", _countFiveDice];
+    diceFiveLabel.string = [NSString stringWithFormat:@"×%d", _countFiveDice];
 }
 
 // 6 のダイスが消された

@@ -24,14 +24,13 @@
 #define DICE_COUNT_FLUSH_TRIGGER 10
 
 // ゲームオーバーとなる高さ（列）
-#define GAME_OVER_LINE 6
+#define GAME_OVER_LINE 8
 
 // ブロックを一列追加するのにかける時間（レベル上がるほど数字は小さく）
 #define BLOCK_ADD_TIME 9
 
-// ブロックせり上がりスピード（難易度）
-#define BLOCK_UP_SPEED 5
-
+// ブロックせり上がりスピードのデフォルト値
+#define BLOCK_UP_SPEED_DEFAULT 5
 
 // 選択中のサイコロの値の合計値の状態を表す変数列挙
 enum {
@@ -58,6 +57,7 @@ enum {
     CCLabelTTF *gameOverLabel;       // 6のサイコロを消した数
     
     NSTimer* tm;                    // タイマー
+    int blockUpSpeed;               // ブロックのせり上がりスピード
 }
 
 @property (nonatomic, retain) CCAnimate *animation;         // 爆発アニメーション（Tile側に持たせる）
