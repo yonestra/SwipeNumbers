@@ -217,9 +217,10 @@
         // タイルオブジェクトを作る
         NSString *file = [NSString stringWithFormat:@"dice_%d.png", randValue];
         Tile* tile = [[Tile alloc] initWithFile:file];
-        tile.position = CGPointMake(TILESIZE*(i%7)+TILESIZE/2+MARGIN_LEFT, TILESIZE*(i/7)+TILESIZE/2+60);
+        tile.position = CGPointMake(TILESIZE*(i%7)+TILESIZE/2+MARGIN_LEFT, TILESIZE*(i/7)+TILESIZE/2+15);
         tile.positionId = i;        // 位置番号
         tile.value = randValue;     // サイコロの値
+        tile.isTouchabled = YES;    // 最初からタッチ可能に
         tile.delegate = self;
         [tileList addObject:tile];  // リストに持っておく
         
@@ -278,7 +279,7 @@
 // タイマーを走らせる
 - (void)startTimer{
     tm = [NSTimer
-          scheduledTimerWithTimeInterval:1
+          scheduledTimerWithTimeInterval:0.3
           target:self
           selector:@selector(countTimer)
           userInfo:nil
@@ -289,46 +290,36 @@
 // 時間計測用メソッド. 1秒ごとに呼ばれる
 - (void)countTimer {
     self.currentTimerCount++;
-    CCLOG(@"timer[%d]", _currentTimerCount);
-    CCLOG(@"tileList[%d]", [tileList count]);
+//    CCLOG(@"timer[%d]", _currentTimerCount);
+//    CCLOG(@"tileList[%d]", [tileList count]);
     
     // せり上がりチェック（レベルによってタイミングは異なる）
     if (self.isAddTileLine) {
-        // せり上がらせる（一列追加する）
+        // 一列分せり上がらせる
         [self addTileLine];
     }
+    
+    // 既存のタイルをちょっとせり上がり
+    if ([self upAllTiles] > 45*GAME_OVER_LINE) {
+        [self showGameOver];
+    };
 }
 
 // 最下段にタイルを一列追加する
 - (void)addTileLine {
-    // TODO: 一列追加の処理
-    
-    // 既存のタイルをせりあがらせる
-    int maxTileHeight = [self upAllTiles];
-    
     for (int i=0; i<7; i++) {
         // タイルオブジェクトを作る
         int randValue = random()%6 + 1;
         NSString *file = [NSString stringWithFormat:@"dice_%d.png", randValue];
         Tile* tile = [[Tile alloc] initWithFile:file];
-        tile.position = CGPointMake(TILESIZE*(i%7)+TILESIZE/2+MARGIN_LEFT, TILESIZE*(i/7)+TILESIZE/2+60);
+        tile.position = CGPointMake(TILESIZE*(i%7)+TILESIZE/2+MARGIN_LEFT, TILESIZE*(i/7)+TILESIZE/2+10);
         tile.positionId = i;        // 位置番号
+        tile.height = i/7 * TILESIZE;     // 始めの高さ
         tile.value = randValue;     // サイコロの値
+//        tile.isTouchabled = NO;     // はじめはタッチ不能に
         tile.delegate = self;
         [tileList addObject:tile];  // リストに持っておく
         [self addChild:tile];       // 画面に表示する
-    }
-    
-    // ゲームオーバー判定
-    if (maxTileHeight > GAME_OVER_LINE) {
-        [self showGameOver];
-//        UIAlertView *alert = [[UIAlertView alloc]
-//                              initWithTitle:@"まけ"
-//                              message:@"ゲームオーバー"
-//                              delegate:self
-//                              cancelButtonTitle:nil
-//                              otherButtonTitles:@"OK", nil];
-//        [alert show];
     }
     
     // タイマーカウンタを初期化
@@ -360,6 +351,9 @@
 // タッチした領域に衝突するタイルを探す
 - (void)collesionTileAction:(UITouch*)touch {
     for (Tile* tile in tileList) {
+        if (tile.isTouchabled == NO) {
+            continue;
+        }
         BOOL result = [tile containsTouchLocation:touch];
         if (result) {
             // 衝突したタイルを選択状態にする
@@ -544,6 +538,7 @@
             max = height;
         }
     }
+    CCLOG(@"max = %d", max);
     return max;
 }
 

@@ -12,7 +12,9 @@
 
 @synthesize positionId = _positionId;
 @synthesize value = _value;
-@synthesize isHighlighted =_isHighlighted;
+@synthesize isHighlighted = _isHighlighted;
+@synthesize isTouchabled = _isTouchabled;
+@synthesize height = _height;
 @synthesize delegate = _delegate;
 
 // 変数の初期化
@@ -21,6 +23,8 @@
         _positionId = -1;
         _value = 0;
         isBursting = NO;
+        _isTouchabled = YES;
+        _height = 0;
     }
     return self;
 }
@@ -50,6 +54,15 @@
     
     // 爆発アニメーションを用意
     [self readyBurstAnimation];
+    
+    // せりあがり開始
+//    NSTimer *tm = [NSTimer
+//          scheduledTimerWithTimeInterval:1
+//          target:self
+//          selector:@selector(runUpper)
+//          userInfo:nil
+//          repeats:YES
+//          ];
 }
 
 // 衝突判定. タッチされた対象が自分であるかどうかを判断する
@@ -157,9 +170,19 @@
 
 // タイルを１つ上に移動. 移動後のpositionIdを返す
 - (int)upTile {
-    _positionId += 7;
-    self.position = CGPointMake(self.position.x, self.position.y + 45);
-    return _positionId/7;
+//    _positionId += 7;
+//    _height += 0.1;
+    _height += 5;
+    if (_height % 45 == 0) {
+        _positionId += 7;           // ポジションIDを調整
+        _isTouchabled = YES;        // タッチ有効に
+    }
+    
+//    self.position = CGPointMake(self.position.x, self.position.y + 45.0/(upTileCount*5));
+//    self.position = CGPointMake(self.position.x, self.position.y + 0.1);
+    self.position = CGPointMake(self.position.x, self.position.y + 5);
+
+    return _height;
 }
 
 // タイルを１つ下の列に移動
@@ -172,6 +195,11 @@
 - (void)showGameOverTile {
     highlightedFrame.visible = NO;
     gameOverFrame.visible = YES;
+}
+
+// タイマーを走らせる
+- (void)runUpper{
+    self.position = CGPointMake(self.position.x, self.position.y + 45/20);
 }
 
 @end

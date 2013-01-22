@@ -26,13 +26,15 @@
 @property (nonatomic, assign) int positionId;           // タイルの場所を表す値
 @property (nonatomic, assign) int value;                // タイルのサイコロ値（1~6）
 @property (nonatomic, readonly) BOOL isHighlighted;     // タイルがハイライト状態かどうか
+@property (nonatomic, assign) BOOL isTouchabled;        // タッチ可能かどうか
+@property (nonatomic, assign) int height;               // 現在の高さ
 
 @property (nonatomic, assign) id<TileEventDelegate> delegate; 
 
 
 - (BOOL)containsTouchLocation:(UITouch *)touch;         // touchの対象タイルかどうかを返す
 - (void)setHighlighted:(BOOL)highlighted;               // タイルの選択状態を切り替える
-- (void)changeTileValue:(int)newValue;            // タイルの数字を更新する
+- (void)changeTileValue:(int)newValue;                  // タイルの数字を更新する
 - (void)burstWithAnimation;                             // タイルを爆発させる
 - (int)upTile;                                          // タイルを１つ上にあげる
 - (void)downTile;                                       // タイルを１つ下に落とす
