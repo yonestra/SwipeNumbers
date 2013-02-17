@@ -49,7 +49,10 @@
         _isAddTileLine = NO;
         _isCurrentPointCheck = CURRENT_POINT_UNDER_TEN;
         
+        blockAddTime = BLOCK_ADD_TIME_DEFAULT;
         blockUpSpeed = BLOCK_UP_SPEED_DEFAULT;
+        blockUpTurn = 0;
+        scoreWeight = 1.0;
     }
     return self;
 }
@@ -66,7 +69,7 @@
     
     // レイアウトの初期化
     [self initLayout];
-    
+
     // タイル配列を初期化
     tileList = [[CCArray alloc] initWithCapacity:NUMBER_OF_READY_FOR_TILES];
     
@@ -250,9 +253,6 @@
         // TODO: つくる
         [self burstSelectedTiles];
         
-        // ポイントを付与する（ロジック+ラベルを更新）
-        self.score += 10;
-        
         // currentSelectTotalPointを0に戻す
         self.currentSelectTotalPoint = 0;
 
@@ -292,20 +292,33 @@
 // 時間計測用メソッド. 経過時間に応じて処理を変えたりする
 - (void)countTimer {
     self.currentTimerCount++;
-//    CCLOG(@"timer[%d]", _currentTimerCount);
-    CCLOG(@"tileList[%d]", [tileList count]);
     
-    if (self.currentTimerCount%BLOCK_UP_SPEED == 0) {
-
+    CCLOG(@"tileList[%d]", [tileList count]);
+    CCLOG(@"currentTimerCount[%d]", self.currentTimerCount);
+    CCLOG(@"blockUpSpeed[%d]", blockUpSpeed);
+    
+    if (self.currentTimerCount%blockUpSpeed == 0) {
+        blockUpTurn++;
+        
         // タイルを一列追加する
-        if (self.currentTimerCount%BLOCK_ADD_TIME == 0) {
+        if (blockUpTurn%9 == 0) {
             [self addTileLine];
+            if (blockUpTurn%18 == 0) {
+            blockUpSpeed-=0.1;
+                scoreWeight+=0.1;
+            // 3以下になると鬼畜な速さなので注意
+            if (blockUpSpeed <= 3) {
+                blockUpSpeed = 3;
+            }
+            }
         }
         
         // 既存のタイルをちょっとせり上がらせる
         if ([self upAllTiles] > TILESIZE*GAME_OVER_LINE) {
             [self showGameOver];
         };
+        
+
     }
 }
 
@@ -546,7 +559,7 @@
 
 // 「残りX秒」のXの部分を計算して返す
 - (int)currentRestTimeCount {
-    int limit = BLOCK_ADD_TIME;
+    int limit = blockAddTime;
     return (limit - _currentTimerCount);
 }
 
@@ -613,5 +626,10 @@
     }
 }
 
+
+- (void)plusScore:(int)value {
+    // ポイントを付与する（ロジック+ラベルを更新）
+    self.score += ((float)value)*scoreWeight;
+}
 
 @end
