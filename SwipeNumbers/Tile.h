@@ -51,5 +51,6 @@
 @protocol TileEventDelegate <NSObject>
 
 - (void)removeTile:(Tile*)tile;
+- (void)plusScore:(int)value;
 
 @end

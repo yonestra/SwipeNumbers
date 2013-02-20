@@ -128,6 +128,11 @@
         [self runAction:actBurst];
     }
     
+    // スコア加算
+    if ([_delegate respondsToSelector:@selector(plusScore:)]) {
+        [_delegate plusScore:self.value];
+    }
+    
     // 0.1秒後にオブジェクトを解放
     NSTimer *tm = [NSTimer scheduledTimerWithTimeInterval:0.3f
                                                    target:self

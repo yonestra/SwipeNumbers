@@ -24,10 +24,10 @@
 #define DICE_COUNT_FLUSH_TRIGGER 10
 
 // ゲームオーバーとなる高さ（列）
-#define GAME_OVER_LINE 8
+#define GAME_OVER_LINE 9
 
 // ブロックを一列追加するのにかける時間（レベル上がるほど数字は小さく）
-#define BLOCK_ADD_TIME 9
+#define BLOCK_ADD_TIME_DEFAULT 9
 
 // ブロックせり上がりスピードのデフォルト値
 #define BLOCK_UP_SPEED_DEFAULT 5
@@ -60,6 +60,9 @@ enum {
     
     NSTimer* tm;                    // タイマー
     int blockUpSpeed;               // ブロックのせり上がりスピード
+    int blockAddTime;               // ブロックを追加するタイミング
+    int blockUpTurn;                // ブロックを何回せりあがらせたか
+    float scoreWeight;
 }
 
 @property (nonatomic, retain) CCAnimate *animation;         // 爆発アニメーション（Tile側に持たせる）
