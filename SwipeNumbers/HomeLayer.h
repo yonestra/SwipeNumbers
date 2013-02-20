@@ -9,8 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
 #import "GADBannerView.h"
+#import <GameKit/GameKit.h>
+#import "GameKitHelper.h"
 
-@interface HomeLayer : CCLayer <GADBannerViewDelegate> {
+@interface HomeLayer : CCLayer <GADBannerViewDelegate, GKLeaderboardViewControllerDelegate, GameKitHelperProtocol> {
     GADBannerView *_bannerView;
 }
 

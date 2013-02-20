@@ -173,6 +173,7 @@
 		FB1BD1FB1688C11800A46C35 /* burst_06@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB1BD1ED1688C11800A46C35 /* burst_06@2x.png */; };
 		FB1BD1FC1688C11800A46C35 /* burst_07.png in Resources */ = {isa = PBXBuildFile; fileRef = FB1BD1EE1688C11800A46C35 /* burst_07.png */; };
 		FB1BD1FD1688C11800A46C35 /* burst_07@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB1BD1EF1688C11800A46C35 /* burst_07@2x.png */; };
+		FB80D4C016B82CF000A8DCD7 /* GameKitHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FB80D4BF16B82CF000A8DCD7 /* GameKitHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -491,6 +492,8 @@
 		FB1BD1ED1688C11800A46C35 /* burst_06@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "burst_06@2x.png"; sourceTree = "<group>"; };
 		FB1BD1EE1688C11800A46C35 /* burst_07.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = burst_07.png; sourceTree = "<group>"; };
 		FB1BD1EF1688C11800A46C35 /* burst_07@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "burst_07@2x.png"; sourceTree = "<group>"; };
+		FB80D4BE16B82CF000A8DCD7 /* GameKitHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameKitHelper.h; sourceTree = "<group>"; };
+		FB80D4BF16B82CF000A8DCD7 /* GameKitHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameKitHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -573,6 +576,8 @@
 				20A289EF1687480E002C4D73 /* Tile.m */,
 				20C23ABD16886E1B00310066 /* GameManager.h */,
 				20C23ABE16886E1B00310066 /* GameManager.m */,
+				FB80D4BE16B82CF000A8DCD7 /* GameKitHelper.h */,
+				FB80D4BF16B82CF000A8DCD7 /* GameKitHelper.m */,
 				FB1BCFDA1686D56B00A46C35 /* Resources */,
 				FB1BCFF41686D56B00A46C35 /* libs */,
 				FB1BD14D1686D57100A46C35 /* Supporting Files */,
@@ -1211,6 +1216,7 @@
 				FB1BD1641686D6F200A46C35 /* GameLayer.m in Sources */,
 				20A289F01687480E002C4D73 /* Tile.m in Sources */,
 				20C23ABF16886E1B00310066 /* GameManager.m in Sources */,
+				FB80D4C016B82CF000A8DCD7 /* GameKitHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

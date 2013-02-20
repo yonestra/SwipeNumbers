@@ -32,6 +32,8 @@
 // ブロックせり上がりスピードのデフォルト値
 #define BLOCK_UP_SPEED_DEFAULT 5
 
+#define BLOCK_UP_SPEED 5
+
 // 選択中のサイコロの値の合計値の状態を表す変数列挙
 enum {
     CURRENT_POINT_UNDER_TEN = 0,    // 合計値が10より小さい

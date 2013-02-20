@@ -86,6 +86,9 @@
 	
 	// make main window visible
 	[window_ makeKeyAndVisible];
+    
+    // Game Center
+//    [self authenticateLocalPlayer];
 	
 	return YES;
 }
@@ -149,5 +152,23 @@
 
 	[super dealloc];
 }
+
+
+
+-(void)authenticateLocalPlayer {
+    [[GKLocalPlayer localPlayer] authenticateWithCompletionHandler:^(NSError *error) {
+        
+        if (error){
+            /* エラー処理 */
+            CCLOG(@"エラー処理");
+        } else {
+            /* 認証済みユーザーを使ってハイスコアとか処理 */
+            CCLOG(@"認証済みユーザーを使ってハイスコアとか処理");
+        }
+        
+    }];
+    
+}
+
 @end
 
